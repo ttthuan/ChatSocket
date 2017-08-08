@@ -28,8 +28,8 @@ public class Server {
     private static boolean running = true;
     private static ServerSocket socketServer = null;
     private static Socket socket = null;
-    private static ArrayList<Socket> listOfSocket = null;
-    private static ArrayList<Account> listOfAccount = null;
+    private static ArrayList<Socket> listOfSocket = new ArrayList<Socket>();
+    private static ArrayList<Account> listOfAccount = new ArrayList<Account>();
     private static Queue<String> queueOfMessenger = new LinkedList<String>();
     private static int numberOfSendMember = 0;
     
