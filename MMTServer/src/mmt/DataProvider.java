@@ -7,7 +7,6 @@ package mmt;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -24,7 +23,7 @@ public class DataProvider {
 
     //JDBC Driver for MS SQL Server 2014
     private final String driverName = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-    private final String connectionString = "jdbc:sqlserver://localhost:1433;databaseName=MMT;user=sa;password=sa123";
+    private final String connectionString = "jdbc:sqlserver://localhost:1433;databaseName=MMT;user=sa;password=123456";
     private Connection connection = null;
 
     // Data Access Object
