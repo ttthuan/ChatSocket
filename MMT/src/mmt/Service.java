@@ -21,6 +21,24 @@ class Service extends Thread {
     public Service(Socket socket) {
         this.socket = socket;
     }
+    
+    // Login with username, password
+    public Account login(String userName, String password) throws IOException, ClassNotFoundException {
+        // gửi 2 chuỗi "đăng nhập" sang cho server kiểm tra
+        Account result = null;
+        String pagData = userName + "," + password;
+        Package pagLogin = new Package(Header.LOGIN, pagData);
+
+        Transport transport = new Transport(socket);
+        transport.sendPackage(pagLogin);
+
+        // nhận thông tin đăng nhập hợp lệ: không hợp lệ ?
+        Package pagServer = transport.recivePackage();
+        if (pagServer.getHeader() == Header.LOGIN) {
+            result = (Account) pagServer.getData();
+        }
+        return result;
+    }
 
     @Override
     public void run() {
