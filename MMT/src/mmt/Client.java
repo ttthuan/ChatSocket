@@ -7,11 +7,9 @@ package mmt;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 enum Header {
-    REGISTER, LOGIN, LOGOUT
+    REGISTER, LOGIN, LOGOUT, SINGLECHAT, MULTIPECHAT
 };
 
 /**
@@ -21,8 +19,9 @@ enum Header {
 public class Client {
 
     // Attributes
-    Socket socketClient;
-    Account account;
+    private Socket socketClient = null;
+    private Account account = null;
+    private Service service = null;
 
     public Socket getSocketClient() {
         return socketClient;
@@ -40,6 +39,14 @@ public class Client {
         this.account = account;
     }
 
+    public Service getService() {
+        return service;
+    }
+
+    public void setService(Service service) {
+        this.service = service;
+    }
+
     public Client(Socket socketClient, Account account) {
         this.socketClient = socketClient;
         this.account = account;
@@ -49,18 +56,23 @@ public class Client {
 
     }
 
-    // Method
-    public void sendMessage() {
-        // gửi 1 tin nhắn tới server 
-        // server gửi đi cho 1 luồng #
-    }
-
+    // Hàm hành sự - Method
+    // kết nối tới Client, tạo luồng phục vụ
+    // chỗ này t muốn tách hàm ra nhưng không biết tách sao cho hay nên để vậy 
     public void connect(String address, int port) throws IOException {
         socketClient = new Socket(address, port);
+
+        service = new Service(socketClient);
+        service.start();
     }
 
     public void disConnect() throws IOException {
         socketClient.close();
+    }
+
+    public void sendMessage() {
+        // gửi 1 tin nhắn tới server 
+        // server gửi đi cho 1 luồng #
     }
 
     // Sent to server of register
@@ -120,35 +132,4 @@ public class Client {
         System.out.println("run GitHub !");
     }
 
-}
-
-class Service extends Thread {
-
-    Socket socket = null;
-
-    @Override
-    public void run() {
-        // xử lý nhận
-        Transport transport = new Transport(socket);
-        try {
-            while (true) {
-                Package pagClient = (Package) transport.recivePackage();
-                if (null != pagClient.getHeader()) {
-                    switch (pagClient.getHeader()) {
-                        
-                    }
-                }
-            }
-        } catch (IOException | ClassNotFoundException ex) {
-            Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        /// xử lý gửi
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        }).start();
-    }
 }

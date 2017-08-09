@@ -15,8 +15,8 @@ import java.util.logging.Logger;
  */
 public class Login extends javax.swing.JFrame {
     private static Client client = null;
-    private static int PORT = 7777;
-    private static String HOST = "localhost";
+    private static final int PORT = 7777;
+    private static final String HOST = "localhost";
     /**
      * Creates new form Login
      */
@@ -116,9 +116,7 @@ public class Login extends javax.swing.JFrame {
         Account result = null;
         try {
             result = client.login(username, password);
-        } catch (IOException ex) {
-            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
+        } catch (IOException | ClassNotFoundException ex) {
             Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
         }
         
@@ -158,15 +156,13 @@ public class Login extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Login().setVisible(true);
-                try {
-                    client = new Client();
-                    client.connect(HOST, PORT);
-                } catch (IOException ex) {
-                    Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
-                }
+        java.awt.EventQueue.invokeLater(() -> {
+            new Login().setVisible(true);
+            try {
+                client = new Client();
+                client.connect(HOST, PORT);
+            } catch (IOException ex) {
+                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
     }
