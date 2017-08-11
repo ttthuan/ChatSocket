@@ -36,7 +36,7 @@ public class ChatRoom extends javax.swing.JFrame {
         txtSearch.setBorder(BorderFactory.createCompoundBorder(
                 txtSearch.getBorder(),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-        customizeImageAvar(avartar, "C:\\Users\\Totoro\\Desktop\\MMT\\MMT\\src\\Images\\unnamed.png");
+        customizeImageAvar(avartar, "../Images/unnamed.png");
     }
 
     /**
@@ -215,7 +215,7 @@ public class ChatRoom extends javax.swing.JFrame {
 
     public void customizeImageAvar(JLabel label, String path) {
         try {
-            BufferedImage master = ImageIO.read(new File(path));
+            BufferedImage master = ImageIO.read(ChatRoom.class.getResource(path));
             int type = master.getType() == 0? BufferedImage.TYPE_INT_ARGB : master.getType();
             master = resizeImage(master, type);
             
@@ -239,7 +239,6 @@ public class ChatRoom extends javax.swing.JFrame {
 
             ImageIcon imgaIcon = new ImageIcon(masked);
             avartar.setIcon(imgaIcon);
-            JOptionPane.showMessageDialog(null, new JLabel(new ImageIcon(masked)));
         } catch (IOException ex) {
             Logger.getLogger(ChatRoom.class.getName()).log(Level.SEVERE, null, ex);
         }
