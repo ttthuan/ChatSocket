@@ -6,6 +6,7 @@
 package mmt;
 
 //import BunifuDrag.BunifuDrag;
+import static java.awt.Frame.MAXIMIZED_BOTH;
 import java.awt.Image;
 import java.awt.MouseInfo;
 import java.awt.event.ActionEvent;
@@ -14,6 +15,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.time.LocalDateTime;
+import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -32,23 +34,21 @@ public class Login extends javax.swing.JFrame {
      */
     public Login() {
         initComponents();
-        
-      new Timer(1000,new ActionListener() {
+
+        new Timer(1000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-             LocalDateTime now = LocalDateTime.now();
+                LocalDateTime now = LocalDateTime.now();
 //        jLabel6.setText(String.valueOf(now.getSecond()));
 //        jLabel15.setText(String.valueOf(now.getMinute()));
-        //jLabel14.setText(String.valueOf(now.getHour()));  
-        
+                //jLabel14.setText(String.valueOf(now.getHour()));  
+
             }
         }).start();
-      Image icon = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB_PRE);
+        Image icon = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB_PRE);
         this.setIconImage(icon);
- 
-    
-    }
 
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -480,6 +480,7 @@ public class Login extends javax.swing.JFrame {
         getContentPane().add(Root, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 842, 551));
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void LeftMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_LeftMouseClicked
@@ -488,12 +489,12 @@ public class Login extends javax.swing.JFrame {
 
     private void LeftMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_LeftMouseDragged
         // TODO add your handling code here:
-      
+
     }//GEN-LAST:event_LeftMouseDragged
 
     private void jLabel12MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel12MouseClicked
         // TODO add your handling code here:
-        btnSignUp.action(null,null);
+        btnSignUp.action(null, null);
     }//GEN-LAST:event_jLabel12MouseClicked
 
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
@@ -520,7 +521,17 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_jLabel18MouseClicked
 
     private void btnSignInMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSignInMouseClicked
-        // ~ đăng nhập
+        // open ChatRoom if ( username and passord is true )
+        new java.util.Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                //after validating let's show the main Jframe
+                ChatRoom chatRoom = new ChatRoom();
+                chatRoom.show();
+                dispose();
+            }
+        }, 200);
+
     }//GEN-LAST:event_btnSignInMouseClicked
 
     private void txtSignInPasswordFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtSignInPasswordFocusGained
@@ -541,9 +552,9 @@ public class Login extends javax.swing.JFrame {
 
     private void chkSignInMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chkSignInMouseClicked
         // TODO add your handling code here:
-        panelSignIn.show(); 
+        panelSignIn.show();
         panelSignUp.hide();
-        
+
     }//GEN-LAST:event_chkSignInMouseClicked
 
     private void txtSignUpFullNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSignUpFullNameActionPerformed
@@ -596,7 +607,7 @@ public class Login extends javax.swing.JFrame {
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
-        
+
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
