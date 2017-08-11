@@ -5,6 +5,22 @@
  */
 package mmt;
 
+import java.awt.AlphaComposite;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Totoro
@@ -16,6 +32,11 @@ public class ChatRoom extends javax.swing.JFrame {
      */
     public ChatRoom() {
         initComponents();
+
+        txtSearch.setBorder(BorderFactory.createCompoundBorder(
+                txtSearch.getBorder(),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+        customizeImageAvar(avartar, "F:\\costa_man-64.png");
     }
 
     /**
@@ -27,31 +48,154 @@ public class ChatRoom extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel2 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
+        panelSearch = new javax.swing.JPanel();
+        txtSearch = new javax.swing.JTextField();
+        panelProfile = new javax.swing.JPanel();
+        panelAvartar = new javax.swing.JPanel();
+        avartar = new javax.swing.JLabel();
+        panelName = new javax.swing.JPanel();
+        jLabel20 = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(842, 551));
         setPreferredSize(new java.awt.Dimension(842, 551));
-        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel1.setBackground(new java.awt.Color(36, 47, 65));
+        jPanel2.setBackground(new java.awt.Color(224, 247, 250));
+        jPanel2.setAlignmentX(0.0F);
+        jPanel2.setAlignmentY(0.0F);
+        jPanel2.setPreferredSize(new java.awt.Dimension(270, 480));
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 840, Short.MAX_VALUE)
+        jPanel1.setBackground(new java.awt.Color(224, 247, 250));
+        jPanel1.setLayout(new java.awt.BorderLayout());
+
+        panelSearch.setBackground(new java.awt.Color(224, 247, 250));
+        panelSearch.setPreferredSize(new java.awt.Dimension(270, 25));
+
+        txtSearch.setBackground(new java.awt.Color(224, 247, 250));
+        txtSearch.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
+        txtSearch.setText("Search Friends");
+        txtSearch.setAlignmentX(1.0F);
+        txtSearch.setAlignmentY(0.0F);
+        txtSearch.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 172, 193)));
+        txtSearch.setDisabledTextColor(new java.awt.Color(204, 204, 204));
+        txtSearch.setPreferredSize(new java.awt.Dimension(80, 25));
+        txtSearch.setSelectionColor(new java.awt.Color(38, 198, 218));
+        txtSearch.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                txtSearchMouseClicked(evt);
+            }
+        });
+
+        javax.swing.GroupLayout panelSearchLayout = new javax.swing.GroupLayout(panelSearch);
+        panelSearch.setLayout(panelSearchLayout);
+        panelSearchLayout.setHorizontalGroup(
+            panelSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelSearchLayout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(21, Short.MAX_VALUE))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 550, Short.MAX_VALUE)
+        panelSearchLayout.setVerticalGroup(
+            panelSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelSearchLayout.createSequentialGroup()
+                .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 840, 550));
+        jPanel1.add(panelSearch, java.awt.BorderLayout.SOUTH);
+
+        panelProfile.setBackground(new java.awt.Color(224, 247, 250));
+        panelProfile.setPreferredSize(new java.awt.Dimension(270, 60));
+        panelProfile.setLayout(new java.awt.BorderLayout());
+
+        panelAvartar.setBackground(new java.awt.Color(224, 247, 250));
+        panelAvartar.setAlignmentX(0.0F);
+        panelAvartar.setAlignmentY(0.0F);
+        panelAvartar.setMinimumSize(new java.awt.Dimension(55, 50));
+        panelAvartar.setName(""); // NOI18N
+        panelAvartar.setPreferredSize(new java.awt.Dimension(60, 130));
+        panelAvartar.setLayout(new java.awt.BorderLayout());
+
+        avartar.setAlignmentY(0.0F);
+        avartar.setMaximumSize(new java.awt.Dimension(48, 48));
+        avartar.setMinimumSize(new java.awt.Dimension(48, 48));
+        avartar.setName(""); // NOI18N
+        avartar.setPreferredSize(new java.awt.Dimension(48, 48));
+        panelAvartar.add(avartar, java.awt.BorderLayout.CENTER);
+
+        panelProfile.add(panelAvartar, java.awt.BorderLayout.WEST);
+
+        panelName.setBackground(new java.awt.Color(224, 247, 250));
+
+        jLabel20.setFont(new java.awt.Font("Noto Sans", 0, 14)); // NOI18N
+        jLabel20.setText("Trịnh Thanh Thuận");
+        jLabel20.setToolTipText("");
+
+        javax.swing.GroupLayout panelNameLayout = new javax.swing.GroupLayout(panelName);
+        panelName.setLayout(panelNameLayout);
+        panelNameLayout.setHorizontalGroup(
+            panelNameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 210, Short.MAX_VALUE)
+            .addGroup(panelNameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelNameLayout.createSequentialGroup()
+                    .addComponent(jLabel20, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                    .addContainerGap()))
+        );
+        panelNameLayout.setVerticalGroup(
+            panelNameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 60, Short.MAX_VALUE)
+            .addGroup(panelNameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(panelNameLayout.createSequentialGroup()
+                    .addGap(18, 18, 18)
+                    .addComponent(jLabel20)
+                    .addContainerGap(22, Short.MAX_VALUE)))
+        );
+
+        panelProfile.add(panelName, java.awt.BorderLayout.CENTER);
+
+        jPanel1.add(panelProfile, java.awt.BorderLayout.CENTER);
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 395, Short.MAX_VALUE))
+        );
+
+        getContentPane().add(jPanel2, java.awt.BorderLayout.WEST);
+
+        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 536, Short.MAX_VALUE)
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 480, Short.MAX_VALUE)
+        );
+
+        getContentPane().add(jPanel3, java.awt.BorderLayout.CENTER);
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void txtSearchMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtSearchMouseClicked
+        // TODO add your handling code here:
+        txtSearch.setText("");
+    }//GEN-LAST:event_txtSearchMouseClicked
 
     /**
      * @param args the command line arguments
@@ -87,8 +231,70 @@ public class ChatRoom extends javax.swing.JFrame {
             }
         });
     }
+    
+    private BufferedImage resizeImage(BufferedImage originalImage, int type){
+	BufferedImage resizedImage = new BufferedImage(avartar.getWidth(), avartar.getHeight(), type);
+	Graphics2D g = resizedImage.createGraphics();
+	g.drawImage(originalImage, 0, 0, avartar.getWidth(), avartar.getHeight(), null);
+	g.dispose();
+
+	return resizedImage;
+    }
+
+    public void customizeImageAvar(JLabel label, String path) {
+        try {
+            BufferedImage master = ImageIO.read(new File(path));
+            int type = master.getType() == 0? BufferedImage.TYPE_INT_ARGB : master.getType();
+            master = resizeImage(master, type);
+            
+            int diameter = Math.min(master.getWidth(), master.getHeight());
+            BufferedImage mask = new BufferedImage(master.getWidth(), master.getHeight(), BufferedImage.TYPE_INT_ARGB);
+
+            Graphics2D g2d = mask.createGraphics();
+            applyQualityRenderingHints(g2d);
+            g2d.fillOval(0, 0, diameter - 1, diameter - 1);
+            g2d.dispose();
+
+            BufferedImage masked = new BufferedImage(diameter, diameter, BufferedImage.TYPE_INT_ARGB);
+            g2d = masked.createGraphics();
+            applyQualityRenderingHints(g2d);
+            int x = (diameter - master.getWidth()) / 2;
+            int y = (diameter - master.getHeight()) / 2;
+            g2d.drawImage(master, x, y, null);
+            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.DST_IN));
+            g2d.drawImage(mask, 0, 0, null);
+            g2d.dispose();
+
+            ImageIcon imgaIcon = new ImageIcon(masked);
+            avartar.setIcon(imgaIcon);
+            JOptionPane.showMessageDialog(null, new JLabel(new ImageIcon(masked)));
+        } catch (IOException ex) {
+            Logger.getLogger(ChatRoom.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public static void applyQualityRenderingHints(Graphics2D g2d) {
+        g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+        g2d.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
+        g2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel avartar;
+    private javax.swing.JLabel jLabel20;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel panelAvartar;
+    private javax.swing.JPanel panelName;
+    private javax.swing.JPanel panelProfile;
+    private javax.swing.JPanel panelSearch;
+    private javax.swing.JTextField txtSearch;
     // End of variables declaration//GEN-END:variables
 }
