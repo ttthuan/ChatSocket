@@ -36,7 +36,7 @@ public class ChatRoom extends javax.swing.JFrame {
         txtSearch.setBorder(BorderFactory.createCompoundBorder(
                 txtSearch.getBorder(),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-        customizeImageAvar(avartar, "F:\\costa_man-64.png");
+        customizeImageAvar(avartar, "C:\\Users\\Totoro\\Desktop\\MMT\\MMT\\src\\Images\\unnamed.png");
     }
 
     /**
@@ -53,10 +53,9 @@ public class ChatRoom extends javax.swing.JFrame {
         panelSearch = new javax.swing.JPanel();
         txtSearch = new javax.swing.JTextField();
         panelProfile = new javax.swing.JPanel();
-        panelAvartar = new javax.swing.JPanel();
         avartar = new javax.swing.JLabel();
-        panelName = new javax.swing.JPanel();
         jLabel20 = new javax.swing.JLabel();
+        jLabel21 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -109,52 +108,25 @@ public class ChatRoom extends javax.swing.JFrame {
 
         panelProfile.setBackground(new java.awt.Color(224, 247, 250));
         panelProfile.setPreferredSize(new java.awt.Dimension(270, 60));
-        panelProfile.setLayout(new java.awt.BorderLayout());
+        panelProfile.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        panelAvartar.setBackground(new java.awt.Color(224, 247, 250));
-        panelAvartar.setAlignmentX(0.0F);
-        panelAvartar.setAlignmentY(0.0F);
-        panelAvartar.setMinimumSize(new java.awt.Dimension(55, 50));
-        panelAvartar.setName(""); // NOI18N
-        panelAvartar.setPreferredSize(new java.awt.Dimension(60, 130));
-        panelAvartar.setLayout(new java.awt.BorderLayout());
-
+        avartar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/unnamed.png"))); // NOI18N
         avartar.setAlignmentY(0.0F);
         avartar.setMaximumSize(new java.awt.Dimension(48, 48));
         avartar.setMinimumSize(new java.awt.Dimension(48, 48));
         avartar.setName(""); // NOI18N
         avartar.setPreferredSize(new java.awt.Dimension(48, 48));
-        panelAvartar.add(avartar, java.awt.BorderLayout.CENTER);
-
-        panelProfile.add(panelAvartar, java.awt.BorderLayout.WEST);
-
-        panelName.setBackground(new java.awt.Color(224, 247, 250));
+        panelProfile.add(avartar, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 11, 60, 60));
 
         jLabel20.setFont(new java.awt.Font("Noto Sans", 0, 14)); // NOI18N
         jLabel20.setText("Trịnh Thanh Thuận");
         jLabel20.setToolTipText("");
+        panelProfile.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 20, 184, -1));
 
-        javax.swing.GroupLayout panelNameLayout = new javax.swing.GroupLayout(panelName);
-        panelName.setLayout(panelNameLayout);
-        panelNameLayout.setHorizontalGroup(
-            panelNameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 210, Short.MAX_VALUE)
-            .addGroup(panelNameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelNameLayout.createSequentialGroup()
-                    .addComponent(jLabel20, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
-                    .addContainerGap()))
-        );
-        panelNameLayout.setVerticalGroup(
-            panelNameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 60, Short.MAX_VALUE)
-            .addGroup(panelNameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(panelNameLayout.createSequentialGroup()
-                    .addGap(18, 18, 18)
-                    .addComponent(jLabel20)
-                    .addContainerGap(22, Short.MAX_VALUE)))
-        );
-
-        panelProfile.add(panelName, java.awt.BorderLayout.CENTER);
+        jLabel21.setFont(new java.awt.Font("Noto Sans", 2, 14)); // NOI18N
+        jLabel21.setText("Một mùa hè nóng nực...");
+        jLabel21.setToolTipText("");
+        panelProfile.add(jLabel21, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 40, 184, -1));
 
         jPanel1.add(panelProfile, java.awt.BorderLayout.CENTER);
 
@@ -167,8 +139,8 @@ public class ChatRoom extends javax.swing.JFrame {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 395, Short.MAX_VALUE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 370, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel2, java.awt.BorderLayout.WEST);
@@ -288,11 +260,10 @@ public class ChatRoom extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel avartar;
     private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel panelAvartar;
-    private javax.swing.JPanel panelName;
     private javax.swing.JPanel panelProfile;
     private javax.swing.JPanel panelSearch;
     private javax.swing.JTextField txtSearch;
