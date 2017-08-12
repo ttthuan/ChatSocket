@@ -49,13 +49,16 @@ public class ChatRoom extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel2 = new javax.swing.JPanel();
-        jPanel1 = new javax.swing.JPanel();
+        panelTop = new javax.swing.JPanel();
         panelSearch = new javax.swing.JPanel();
         txtSearch = new javax.swing.JTextField();
         panelProfile = new javax.swing.JPanel();
         avartar = new javax.swing.JLabel();
         jLabel20 = new javax.swing.JLabel();
         jLabel21 = new javax.swing.JLabel();
+        pannelContent = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jList1 = new javax.swing.JList<>();
         jPanel3 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -67,8 +70,8 @@ public class ChatRoom extends javax.swing.JFrame {
         jPanel2.setAlignmentY(0.0F);
         jPanel2.setPreferredSize(new java.awt.Dimension(270, 480));
 
-        jPanel1.setBackground(new java.awt.Color(224, 247, 250));
-        jPanel1.setLayout(new java.awt.BorderLayout());
+        panelTop.setBackground(new java.awt.Color(224, 247, 250));
+        panelTop.setLayout(new java.awt.BorderLayout());
 
         panelSearch.setBackground(new java.awt.Color(224, 247, 250));
         panelSearch.setPreferredSize(new java.awt.Dimension(270, 25));
@@ -104,7 +107,7 @@ public class ChatRoom extends javax.swing.JFrame {
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
-        jPanel1.add(panelSearch, java.awt.BorderLayout.SOUTH);
+        panelTop.add(panelSearch, java.awt.BorderLayout.SOUTH);
 
         panelProfile.setBackground(new java.awt.Color(224, 247, 250));
         panelProfile.setPreferredSize(new java.awt.Dimension(270, 60));
@@ -128,19 +131,40 @@ public class ChatRoom extends javax.swing.JFrame {
         jLabel21.setToolTipText("");
         panelProfile.add(jLabel21, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 40, 184, -1));
 
-        jPanel1.add(panelProfile, java.awt.BorderLayout.CENTER);
+        panelTop.add(panelProfile, java.awt.BorderLayout.CENTER);
+
+        pannelContent.setBackground(new java.awt.Color(224, 247, 250));
+        pannelContent.setLayout(new java.awt.BorderLayout());
+
+        jScrollPane1.setBorder(null);
+        jScrollPane1.setAlignmentX(0.0F);
+        jScrollPane1.setAlignmentY(0.0F);
+
+        jList1.setBackground(new java.awt.Color(224, 247, 250));
+        jList1.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jList1.setAlignmentX(0.0F);
+        jList1.setAlignmentY(0.0F);
+        jScrollPane1.setViewportView(jList1);
+
+        pannelContent.add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(panelTop, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pannelContent, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 370, Short.MAX_VALUE))
+                .addComponent(panelTop, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pannelContent, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel2, java.awt.BorderLayout.WEST);
@@ -238,7 +262,7 @@ public class ChatRoom extends javax.swing.JFrame {
             g2d.dispose();
 
             ImageIcon imgaIcon = new ImageIcon(masked);
-            avartar.setIcon(imgaIcon);
+            label.setIcon(imgaIcon);
         } catch (IOException ex) {
             Logger.getLogger(ChatRoom.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -260,11 +284,14 @@ public class ChatRoom extends javax.swing.JFrame {
     private javax.swing.JLabel avartar;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JList<String> jList1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel panelProfile;
     private javax.swing.JPanel panelSearch;
+    private javax.swing.JPanel panelTop;
+    private javax.swing.JPanel pannelContent;
     private javax.swing.JTextField txtSearch;
     // End of variables declaration//GEN-END:variables
 }

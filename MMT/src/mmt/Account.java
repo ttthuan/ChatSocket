@@ -16,6 +16,7 @@ public class Account implements Serializable {
     private String userName;
     private String password;
     private String fullName;
+    
 
     public String getUserName() {
         return userName;
@@ -27,6 +28,10 @@ public class Account implements Serializable {
 
     public String getPassword() {
         return password;
+    }
+    
+    public String getImage(){
+        return pathImage;
     }
 
     public void setPassword(String password) {
@@ -40,8 +45,18 @@ public class Account implements Serializable {
     public void setFullName(String fullName) {
         this.fullName = fullName;
     }
+    
+    public void setImage(String path){
+        pathImage = path;
+    }
 
     public Account(String userName, String password, String fullName) {
+        this.userName = userName;
+        this.password = password;
+        this.fullName = fullName;
+    }
+    
+    public Account(String userName, String password, String fullName, String path) {
         this.userName = userName;
         this.password = password;
         this.fullName = fullName;
