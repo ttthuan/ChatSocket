@@ -138,7 +138,7 @@ public class AccountItem extends javax.swing.JPanel implements ListCellRenderer<
         name.setText("conmeomunbencuaso");
         itemAccount.add(name, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 10, -1, -1));
 
-        jRadioButton1.setBackground(new java.awt.Color(224, 247, 250));
+        jRadioButton1.setBackground(new java.awt.Color(240, 244, 248));
         jRadioButton1.setForeground(new java.awt.Color(0, 51, 51));
         jRadioButton1.setSelected(true);
         jRadioButton1.setText("Online");
@@ -150,7 +150,6 @@ public class AccountItem extends javax.swing.JPanel implements ListCellRenderer<
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel avatar;
-    private javax.swing.JCheckBox chkSignUp;
     private javax.swing.JPanel itemAccount;
     private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JLabel name;
