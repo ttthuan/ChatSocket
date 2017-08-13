@@ -32,15 +32,18 @@ public class Login extends javax.swing.JFrame {
     public Login() {
         initComponents();
 
-        new Timer(1000, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                LocalDateTime now = LocalDateTime.now();
-            }
-        }).start();
         Image icon = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB_PRE);
         this.setIconImage(icon);
-
+        
+        // khởi tạo Client - kết nối tới server.
+        // chỉnh lại giao diện kết nối fail sau ---
+        client = new Client();
+        try {
+            client.connect(HOST, PORT);
+            //System.out.println(client.getService().toString());
+        } catch (IOException ex) {
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -521,6 +524,7 @@ public class Login extends javax.swing.JFrame {
             if (act == null) {
                 System.out.println("Đăng nhập thất bại, vui lòng kiểm tra lại thông tin!");
             } else {
+                client.startReciveFormServer();
                 ChatRoom chatRoom = new ChatRoom();
                 // truyền client sang cho chatRoom ~
                 chatRoom.setClient(client);
@@ -597,16 +601,6 @@ public class Login extends javax.swing.JFrame {
                 new Login().setVisible(true);
             }
         });
-
-        // khởi tạo Client - kết nối tới server.
-        // chỉnh lại giao diện kết nối fail sau ---
-        client = new Client();
-        try {
-            client.connect(HOST, PORT);
-            //System.out.println(client.getService().toString());
-        } catch (IOException ex) {
-            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

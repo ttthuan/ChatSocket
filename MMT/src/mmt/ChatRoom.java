@@ -63,6 +63,7 @@ public class ChatRoom extends javax.swing.JFrame {
         BufferedImage resizedImage = new BufferedImage(avartar.getWidth(), avartar.getHeight(), type);
         Graphics2D g = resizedImage.createGraphics();
         g.drawImage(originalImage, 0, 0, avartar.getWidth(), avartar.getHeight(), null);
+        System.out.println(" " + avartar.getWidth() + " " + avartar.getHeight());
         g.dispose();
 
         return resizedImage;

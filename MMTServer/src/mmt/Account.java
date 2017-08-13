@@ -16,6 +16,8 @@ public class Account implements Serializable {
     private String userName;
     private String password;
     private String fullName;
+    private String image;
+    
 
     public String getUserName() {
         return userName;
@@ -27,6 +29,10 @@ public class Account implements Serializable {
 
     public String getPassword() {
         return password;
+    }
+    
+    public String getImage(){
+        return image;
     }
 
     public void setPassword(String password) {
@@ -40,11 +46,22 @@ public class Account implements Serializable {
     public void setFullName(String fullName) {
         this.fullName = fullName;
     }
+    
+    public void setImage(String image){
+        this.image = image;
+    }
 
     public Account(String userName, String password, String fullName) {
         this.userName = userName;
         this.password = password;
         this.fullName = fullName;
+    }
+    
+    public Account(String userName, String password, String fullName, String image) {
+        this.userName = userName;
+        this.password = password;
+        this.fullName = fullName;
+        this.image = image;
     }
 
     // Danh sách hàm hành sự của lớp "Tài Khoản"

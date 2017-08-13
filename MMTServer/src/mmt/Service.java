@@ -49,7 +49,9 @@ class Service extends Thread {
 
                             String userName = login[0];
                             String password = login[1];
-
+                            // debug
+                            System.out.println(userName + " " + password);
+                            
                             Account resultLogin = login(userName, password);
                             
                             Package pagLogin = new Package(Header.LOGIN, resultLogin);

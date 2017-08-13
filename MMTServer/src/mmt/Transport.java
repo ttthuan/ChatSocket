@@ -32,7 +32,7 @@ public class Transport {
 
     // recive a package through network
     public Package recivePackage() throws IOException, ClassNotFoundException{
-        Package pag = new Package();
+        Package pag = null;
         recive = new ObjectInputStream(socket.getInputStream());
         pag = (Package) recive.readObject();
         return pag;

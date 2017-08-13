@@ -63,7 +63,7 @@ public class AccountItem extends javax.swing.JPanel implements ListCellRenderer<
     }
 
     private BufferedImage resizeImage(BufferedImage originalImage, int type) {
-        BufferedImage resizedImage = new BufferedImage(this.avatar.getWidth(), this.avatar.getHeight(), type);
+        BufferedImage resizedImage = new BufferedImage(48, 48, type);
         Graphics2D g = resizedImage.createGraphics();
         g.drawImage(originalImage, 0, 0, this.avatar.getWidth(), this.avatar.getHeight(), null);
         g.dispose();
@@ -73,9 +73,9 @@ public class AccountItem extends javax.swing.JPanel implements ListCellRenderer<
 
     public void customizeImageAvar(JLabel label, String path) {
         try {
-            BufferedImage master = ImageIO.read(ChatRoom.class.getResource(path));
+            BufferedImage master = ImageIO.read(AccountItem.class.getResource(path));
             int type = master.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : master.getType();
-            //master = resizeImage(master, type);
+            master = resizeImage(master, type);
 
             int diameter = Math.min(master.getWidth(), master.getHeight());
             BufferedImage mask = new BufferedImage(master.getWidth(), master.getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -98,7 +98,7 @@ public class AccountItem extends javax.swing.JPanel implements ListCellRenderer<
             ImageIcon imgaIcon = new ImageIcon(masked);
             label.setIcon(imgaIcon);
         } catch (IOException ex) {
-            Logger.getLogger(ChatRoom.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AccountItem.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

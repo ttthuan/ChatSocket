@@ -57,7 +57,7 @@ public class Client {
     public void connect(String address, int port) throws IOException {
         socketClient = new Socket(address, port);
         if (socketClient != null) {
-            new Thread(new Service(socketClient)).start();;
+            service = new Service(socketClient);
         }
     }
 
@@ -82,7 +82,12 @@ public class Client {
         if (pagServer.getHeader() == Header.REGISTER) {
             result = (boolean) pagServer.getData();
         }
+        
         return result;
+    }
+    
+    public void startReciveFormServer(){
+        new Thread(new Service(socketClient)).start();
     }
 
     // Login with username, password
