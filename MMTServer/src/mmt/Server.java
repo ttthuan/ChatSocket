@@ -15,10 +15,6 @@ import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-enum Header {
-    REGISTER, LOGIN, LOGOUT, SINGLECHAT, MULTIPECHAT
-};
-
 /**
  *
  * @author Totoro

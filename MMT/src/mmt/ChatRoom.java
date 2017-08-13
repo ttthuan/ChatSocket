@@ -131,7 +131,6 @@ public class ChatRoom extends javax.swing.JFrame {
         listAccount = new javax.swing.JList<>();
         panlChatRoom = new javax.swing.JPanel();
         panelHome = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
         panelChat = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         lbTitleContact = new javax.swing.JLabel();
@@ -141,6 +140,11 @@ public class ChatRoom extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
+        jPanel6 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        listChat = new javax.swing.JList<>();
+        jSeparator3 = new javax.swing.JSeparator();
+        txtChat = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(842, 551));
@@ -161,11 +165,12 @@ public class ChatRoom extends javax.swing.JFrame {
         txtSearch.setBackground(new java.awt.Color(240, 244, 248));
         txtSearch.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txtSearch.setText("Search Friends");
-        txtSearch.setAlignmentX(1.0F);
+        txtSearch.setAlignmentX(0.0F);
         txtSearch.setAlignmentY(0.0F);
         txtSearch.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 172, 193)));
         txtSearch.setDisabledTextColor(new java.awt.Color(204, 204, 204));
         txtSearch.setPreferredSize(new java.awt.Dimension(80, 25));
+        txtSearch.setRequestFocusEnabled(false);
         txtSearch.setSelectionColor(new java.awt.Color(240, 244, 248));
         txtSearch.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -295,7 +300,7 @@ public class ChatRoom extends javax.swing.JFrame {
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panelListAccount, javax.swing.GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE)
+            .addComponent(panelListAccount, javax.swing.GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout pannelContentLayout = new javax.swing.GroupLayout(pannelContent);
@@ -338,24 +343,15 @@ public class ChatRoom extends javax.swing.JFrame {
 
         panelHome.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel3.setText("HOME");
-
         javax.swing.GroupLayout panelHomeLayout = new javax.swing.GroupLayout(panelHome);
         panelHome.setLayout(panelHomeLayout);
         panelHomeLayout.setHorizontalGroup(
             panelHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelHomeLayout.createSequentialGroup()
-                .addContainerGap(258, Short.MAX_VALUE)
-                .addComponent(jLabel3)
-                .addGap(254, 254, 254))
+            .addGap(0, 654, Short.MAX_VALUE)
         );
         panelHomeLayout.setVerticalGroup(
             panelHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelHomeLayout.createSequentialGroup()
-                .addGap(240, 240, 240)
-                .addComponent(jLabel3)
-                .addContainerGap(297, Short.MAX_VALUE))
+            .addGap(0, 562, Short.MAX_VALUE)
         );
 
         panlChatRoom.add(panelHome, "card2");
@@ -370,6 +366,8 @@ public class ChatRoom extends javax.swing.JFrame {
 
         lbTitleContact.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
         lbTitleContact.setText("conmeomunbencuaso");
+
+        jSeparator1.setForeground(new java.awt.Color(204, 204, 255));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/icons8-Talk Male-24.png"))); // NOI18N
 
@@ -389,7 +387,7 @@ public class ChatRoom extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lbTitleContact)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 265, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 358, Short.MAX_VALUE)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel5)
@@ -416,15 +414,55 @@ public class ChatRoom extends javax.swing.JFrame {
         jPanel3.setAlignmentX(0.0F);
         jPanel3.setAlignmentY(0.0F);
 
+        jScrollPane1.setBorder(null);
+
+        jScrollPane1.setViewportView(listChat);
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane1)
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
+        );
+
+        jSeparator3.setBackground(new java.awt.Color(204, 204, 255));
+        jSeparator3.setForeground(new java.awt.Color(255, 255, 255));
+
+        txtChat.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
+        txtChat.setText("   Enter to talk...");
+        txtChat.setBorder(null);
+        txtChat.setDisabledTextColor(new java.awt.Color(204, 204, 204));
+        txtChat.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                txtChatMouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jSeparator3)
+                    .addComponent(txtChat))
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 515, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 2, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtChat, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout panelChatLayout = new javax.swing.GroupLayout(panelChat);
@@ -450,11 +488,6 @@ public class ChatRoom extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtSearchMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtSearchMouseClicked
-        // TODO add your handling code here:
-        txtSearch.setText("");
-    }//GEN-LAST:event_txtSearchMouseClicked
-
     private void listAccountMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listAccountMouseClicked
         // TODO add your handling code here:
         panelHome.hide();
@@ -467,6 +500,16 @@ public class ChatRoom extends javax.swing.JFrame {
         panelChat.hide();
         panelHome.show();
     }//GEN-LAST:event_lbHomeMouseClicked
+
+    private void txtSearchMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtSearchMouseClicked
+        // TODO add your handling code here:
+        txtSearch.setText("");
+    }//GEN-LAST:event_txtSearchMouseClicked
+
+    private void txtChatMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtChatMouseClicked
+        // TODO add your handling code here:
+        txtChat.setText("");
+    }//GEN-LAST:event_txtChatMouseClicked
 
     /**
      * @param args the command line arguments
@@ -504,7 +547,6 @@ public class ChatRoom extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
@@ -512,20 +554,28 @@ public class ChatRoom extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator3;
     private javax.swing.JLabel lbContact;
     private javax.swing.JLabel lbHome;
     private javax.swing.JLabel lbTitleContact;
     private javax.swing.JList<Account> listAccount;
+    private javax.swing.JList<String> listChat;
     private javax.swing.JPanel panelChat;
     private javax.swing.JPanel panelHeader;
     private javax.swing.JPanel panelHome;
     private javax.swing.JScrollPane panelListAccount;
+    private javax.swing.JScrollPane panelListAccount1;
     private javax.swing.JPanel panelProfile;
     private javax.swing.JPanel panelSearch;
     private javax.swing.JPanel panelTop;
     private javax.swing.JPanel panlChatRoom;
     private javax.swing.JPanel pannelContent;
+    private javax.swing.JTextField txtChat;
     private javax.swing.JTextField txtSearch;
+    private javax.swing.JTextField txtSignInUsername;
+    private javax.swing.JTextField txtSignInUsername1;
     // End of variables declaration//GEN-END:variables
 }

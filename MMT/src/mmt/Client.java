@@ -7,11 +7,6 @@ package mmt;
 
 import java.io.IOException;
 import java.net.Socket;
-
-enum Header {
-    REGISTER, LOGIN, LOGOUT, SINGLECHAT, MULTIPECHAT
-};
-
 /**
  *
  * @author Totoro

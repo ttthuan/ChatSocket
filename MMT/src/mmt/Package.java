@@ -7,6 +7,10 @@ package mmt;
 
 import java.io.Serializable;
 
+enum Header {
+    REGISTER, LOGIN, LOGOUT, SINGLECHAT, MULTIPECHAT
+};
+
 /**
  *
  * @author Totoro
