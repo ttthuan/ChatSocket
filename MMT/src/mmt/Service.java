@@ -14,7 +14,7 @@ import java.util.logging.Logger;
  *
  * @author Totoro
  */
-class Service extends Thread {
+class Service implements Runnable {
 
     Socket socket = null;
 
@@ -23,7 +23,7 @@ class Service extends Thread {
     }
     
     // Login with username, password
-    public Account login(String userName, String password) throws IOException, ClassNotFoundException {
+    public Account signIn(String userName, String password) throws IOException, ClassNotFoundException {
         // gửi 2 chuỗi "đăng nhập" sang cho server kiểm tra
         Account result = null;
         String pagData = userName + "," + password;
@@ -56,13 +56,5 @@ class Service extends Thread {
         } catch (IOException | ClassNotFoundException ex) {
             Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        /// xử lý gửi
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        }).start();
     }
 }

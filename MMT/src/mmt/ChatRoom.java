@@ -8,6 +8,8 @@ package mmt;
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -17,6 +19,7 @@ import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -24,19 +27,36 @@ import javax.swing.JLabel;
  */
 public class ChatRoom extends javax.swing.JFrame {
 
-    DefaultListModel<Account> modelAccount;
+    private DefaultListModel<Account> modelAccount;
+    private Client client = null;
 
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+       
     /**
      * Creates new form ChatRoom
      */
     public ChatRoom() {
         initComponents();
-
         txtSearch.setBorder(BorderFactory.createCompoundBorder(
                 txtSearch.getBorder(),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)));
         customizeImageAvar(avartar, "../Images/unnamed.png");
         showListOfAccount();
+        
+        txtChat.addKeyListener(new KeyAdapter() {
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    chat(txtChat.getText());
+                }
+            }
+        });
+
     }
 
     private BufferedImage resizeImage(BufferedImage originalImage, int type) {
@@ -102,6 +122,11 @@ public class ChatRoom extends javax.swing.JFrame {
         modelAccount.addElement(new Account("6", "F", "Nguyễn Công Thành", "android"));
         listAccount.setModel(modelAccount);
         listAccount.setCellRenderer(new AccountItem());
+    }
+
+    public void chat(String sms) {
+        JOptionPane.showMessageDialog(null, sms);
+        
     }
 
     /**
@@ -531,7 +556,7 @@ public class ChatRoom extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(ChatRoom.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        
+
         //</editor-fold>
 
         /* Create and display the form */

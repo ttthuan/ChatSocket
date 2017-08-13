@@ -7,6 +7,7 @@ package mmt;
 
 import java.io.IOException;
 import java.net.Socket;
+
 /**
  *
  * @author Totoro
@@ -50,15 +51,14 @@ public class Client {
     public Client() {
 
     }
-
     // Hàm hành sự - Method
     // kết nối tới Client, tạo luồng phục vụ
     // chỗ này t muốn tách hàm ra nhưng không biết tách sao cho hay nên để vậy 
     public void connect(String address, int port) throws IOException {
         socketClient = new Socket(address, port);
-
-        service = new Service(socketClient);
-//        service.start();
+        if (socketClient != null) {
+            new Thread(new Service(socketClient)).start();;
+        }
     }
 
     public void disConnect() throws IOException {
@@ -86,8 +86,8 @@ public class Client {
     }
 
     // Login with username, password
-    public Account login(String userName, String password) throws IOException, ClassNotFoundException {
-        return service.login(userName, password);
+    public Account signIn(String userName, String password) throws IOException, ClassNotFoundException {
+        return service.signIn(userName, password);
     }
 
     // - 1 = logout

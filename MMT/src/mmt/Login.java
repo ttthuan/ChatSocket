@@ -6,21 +6,14 @@
 package mmt;
 
 //import BunifuDrag.BunifuDrag;
-import static java.awt.Frame.MAXIMIZED_BOTH;
 import java.awt.Image;
-import java.awt.MouseInfo;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.TimerTask;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import javafx.util.converter.LocalDateTimeStringConverter;
-import javax.swing.SwingUtilities;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Timer;
 
 /**
@@ -28,6 +21,10 @@ import javax.swing.Timer;
  * @author proxc
  */
 public class Login extends javax.swing.JFrame {
+
+    private static final String HOST = "localhost";
+    private static final int PORT = 7777;
+    private static Client client = null;
 
     /**
      * Creates new form Home41
@@ -39,10 +36,6 @@ public class Login extends javax.swing.JFrame {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 LocalDateTime now = LocalDateTime.now();
-//        jLabel6.setText(String.valueOf(now.getSecond()));
-//        jLabel15.setText(String.valueOf(now.getMinute()));
-                //jLabel14.setText(String.valueOf(now.getHour()));  
-
             }
         }).start();
         Image icon = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB_PRE);
@@ -521,16 +514,27 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_jLabel18MouseClicked
 
     private void btnSignInMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSignInMouseClicked
-        // open ChatRoom if ( username and passord is true )
-        new java.util.Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                //after validating let's show the main Jframe
+        String username = txtSignInUsername.getText();
+        String password = txtSignInPassword.getText();
+        try {
+            Account act = client.signIn(username, password);
+            if (act == null) {
+                System.out.println("Đăng nhập thất bại, vui lòng kiểm tra lại thông tin!");
+            } else {
                 ChatRoom chatRoom = new ChatRoom();
+                // truyền client sang cho chatRoom ~
+                chatRoom.setClient(client);
                 chatRoom.show();
                 dispose();
             }
-        }, 200);
+        } catch (IOException | ClassNotFoundException ex) {
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        // gửi thông tin đăng nhập từ GUI 
+        // -> client -> serivceClient => sericeServer 
+        // -> Server -> get thông tin và gửi ngược lại.
+        //if( đúng thì gửi client sang cho chat room với accoutn update # null);
 
     }//GEN-LAST:event_btnSignInMouseClicked
 
@@ -575,6 +579,7 @@ public class Login extends javax.swing.JFrame {
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
+
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Windows".equals(info.getName())) {
@@ -582,31 +587,9 @@ public class Login extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -614,6 +597,16 @@ public class Login extends javax.swing.JFrame {
                 new Login().setVisible(true);
             }
         });
+
+        // khởi tạo Client - kết nối tới server.
+        // chỉnh lại giao diện kết nối fail sau ---
+        client = new Client();
+        try {
+            client.connect(HOST, PORT);
+            //System.out.println(client.getService().toString());
+        } catch (IOException ex) {
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
