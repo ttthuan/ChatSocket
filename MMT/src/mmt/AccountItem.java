@@ -130,7 +130,7 @@ public class AccountItem extends javax.swing.JPanel implements ListCellRenderer<
 
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        itemAccount.setBackground(new java.awt.Color(255, 255, 255));
+        itemAccount.setBackground(new java.awt.Color(240, 244, 248));
         itemAccount.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         itemAccount.add(avatar, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, 60, 60));
 
@@ -144,7 +144,7 @@ public class AccountItem extends javax.swing.JPanel implements ListCellRenderer<
         jRadioButton1.setText("Online");
         itemAccount.add(jRadioButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 30, -1, 20));
 
-        add(itemAccount, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 250, 70));
+        add(itemAccount, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 250, 60));
     }// </editor-fold>//GEN-END:initComponents
 
 

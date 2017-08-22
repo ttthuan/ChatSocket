@@ -309,8 +309,11 @@ public class ChatRoom extends javax.swing.JFrame {
         panelListAccount.setAlignmentY(0.0F);
 
         listAccount.setBackground(new java.awt.Color(240, 244, 248));
+        listAccount.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         listAccount.setAlignmentX(0.0F);
         listAccount.setAlignmentY(0.0F);
+        listAccount.setSelectionBackground(new java.awt.Color(187, 222, 251));
+        listAccount.setSelectionForeground(new java.awt.Color(0, 0, 0));
         listAccount.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 listAccountMouseClicked(evt);
@@ -593,7 +596,6 @@ public class ChatRoom extends javax.swing.JFrame {
     private javax.swing.JPanel panelHeader;
     private javax.swing.JPanel panelHome;
     private javax.swing.JScrollPane panelListAccount;
-    private javax.swing.JScrollPane panelListAccount1;
     private javax.swing.JPanel panelProfile;
     private javax.swing.JPanel panelSearch;
     private javax.swing.JPanel panelTop;
@@ -601,7 +603,5 @@ public class ChatRoom extends javax.swing.JFrame {
     private javax.swing.JPanel pannelContent;
     private javax.swing.JTextField txtChat;
     private javax.swing.JTextField txtSearch;
-    private javax.swing.JTextField txtSignInUsername;
-    private javax.swing.JTextField txtSignInUsername1;
     // End of variables declaration//GEN-END:variables
 }
