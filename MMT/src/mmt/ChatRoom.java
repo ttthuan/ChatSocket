@@ -11,13 +11,17 @@ import java.awt.RenderingHints;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import static java.awt.image.ImageObserver.ERROR;
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.swing.AbstractListModel;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
@@ -27,8 +31,10 @@ import javax.swing.JOptionPane;
  */
 public class ChatRoom extends javax.swing.JFrame {
 
-    private DefaultListModel<Account> modelAccount;
+    //private DefaultListModel<Account> modelAccount;
     private Client client = null;
+    private static CustomizeAbstractListModel customizeListModel = null;
+    private static boolean firstRun = true;
 
     public Client getClient() {
         return client;
@@ -37,33 +43,34 @@ public class ChatRoom extends javax.swing.JFrame {
     public void setClient(Client client) {
         this.client = client;
     }
-       
+
+    public static void showListChatAll(String sms) {
+        System.out.println(sms);
+    }
+
     /**
      * Creates new form ChatRoom
      */
-    public ChatRoom() {
+    public ChatRoom(Client client) {
         initComponents();
         txtSearch.setBorder(BorderFactory.createCompoundBorder(
                 txtSearch.getBorder(),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)));
         customizeImageAvar(avartar, "../Images/unnamed.png");
-        showListOfAccount();
-        
-        txtChat.addKeyListener(new KeyAdapter() {
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    chat(txtChat.getText());
-                }
-            }
-        });
+        this.client = client;
+        lbUsername.setText(client.getAccount().getFullName());
 
+        try {
+            client.startReciveFormServer();
+        } catch (IOException ex) {
+            Logger.getLogger(ChatRoom.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private BufferedImage resizeImage(BufferedImage originalImage, int type) {
         BufferedImage resizedImage = new BufferedImage(avartar.getWidth(), avartar.getHeight(), type);
         Graphics2D g = resizedImage.createGraphics();
         g.drawImage(originalImage, 0, 0, avartar.getWidth(), avartar.getHeight(), null);
-        System.out.println(" " + avartar.getWidth() + " " + avartar.getHeight());
         g.dispose();
 
         return resizedImage;
@@ -112,22 +119,50 @@ public class ChatRoom extends javax.swing.JFrame {
 
     }
 
-    // xem danh sách bạn bè
-    public void showListOfAccount() {
-        modelAccount = new DefaultListModel<>();
-        modelAccount.addElement(new Account("1", "A", "Trương Tuấn Kiệt", "cpp"));
-        modelAccount.addElement(new Account("2", "B", "Đỗ Minh Thiện", "java"));
-        modelAccount.addElement(new Account("3", "C", "Trịnh Thanh Thuận", "cs"));
-        modelAccount.addElement(new Account("4", "D", "Nguyễn Đức Đông", "ios"));
-        modelAccount.addElement(new Account("5", "E", "Lâm Thiên Hưng", "wp"));
-        modelAccount.addElement(new Account("6", "F", "Nguyễn Công Thành", "android"));
-        listAccount.setModel(modelAccount);
-        listAccount.setCellRenderer(new AccountItem());
+    public static void setUsernameOnUi(String username) {
+        lbUsername.setText(username);
     }
 
-    public void chat(String sms) {
-        JOptionPane.showMessageDialog(null, sms);
-        
+    // xem danh sách bạn bè
+    public static void showListOfAccount(List<Account> listOfAccount) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                synchronized (this) {
+                    if (firstRun) {
+                        customizeListModel = new CustomizeAbstractListModel(listOfAccount);
+                        if (listAccount.isValid()) {
+                            listAccount.setModel(customizeListModel);
+                            listAccount.setCellRenderer(new AccountItem());
+                            firstRun = false;
+                        }
+                    } else if (listAccount.isValid()) {
+                        int size = listOfAccount.size();
+                        for (int i = 0; i < size; i++) {
+                            if (customizeListModel.getDsAccount().contains(listOfAccount.get(i)) == false) {
+                                customizeListModel.addAccount(listOfAccount.get(i));
+                            }
+                        }
+
+                        int size2 = customizeListModel.getDsAccount().size();
+                        for (int j = 0; j < size2; j++) {
+                            if (listOfAccount.contains(customizeListModel.getDsAccount().get(j)) == false) {
+                                customizeListModel.deleteAccount(customizeListModel.getDsAccount().get(j));
+                            }
+                        }
+                    }
+
+                    // debug
+                    System.out.println("size of list account from server " + listOfAccount.size());
+                    if (listAccount.isValid()) {
+                        for (int i = 0; i < listOfAccount.size(); i++) {
+                            System.out.println(listOfAccount.get(i).getUserName());
+                        }
+                        System.out.println("----------------------------------");
+                    }
+                }
+            }
+        }).start();
     }
 
     /**
@@ -145,7 +180,7 @@ public class ChatRoom extends javax.swing.JFrame {
         txtSearch = new javax.swing.JTextField();
         panelProfile = new javax.swing.JPanel();
         avartar = new javax.swing.JLabel();
-        jLabel20 = new javax.swing.JLabel();
+        lbUsername = new javax.swing.JLabel();
         jLabel21 = new javax.swing.JLabel();
         pannelContent = new javax.swing.JPanel();
         panelHeader = new javax.swing.JPanel();
@@ -158,17 +193,18 @@ public class ChatRoom extends javax.swing.JFrame {
         panlChatRoom = new javax.swing.JPanel();
         panelHome = new javax.swing.JPanel();
         panelChat = new javax.swing.JPanel();
-        jPanel1 = new javax.swing.JPanel();
+        panelTitle = new javax.swing.JPanel();
         lbTitleContact = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jPanel3 = new javax.swing.JPanel();
-        jPanel6 = new javax.swing.JPanel();
+        panelBody = new javax.swing.JPanel();
+        panelChatList = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         listChat = new javax.swing.JList<>();
+        txtChatAll = new javax.swing.JLabel();
         jSeparator3 = new javax.swing.JSeparator();
         txtChat = new javax.swing.JTextField();
 
@@ -234,10 +270,10 @@ public class ChatRoom extends javax.swing.JFrame {
         avartar.setPreferredSize(new java.awt.Dimension(48, 48));
         panelProfile.add(avartar, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 11, 60, 60));
 
-        jLabel20.setFont(new java.awt.Font("Noto Sans", 0, 14)); // NOI18N
-        jLabel20.setText("Trịnh Thanh Thuận");
-        jLabel20.setToolTipText("");
-        panelProfile.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 20, 184, -1));
+        lbUsername.setFont(new java.awt.Font("Noto Sans", 0, 14)); // NOI18N
+        lbUsername.setText("Trịnh Thanh Thuận");
+        lbUsername.setToolTipText("");
+        panelProfile.add(lbUsername, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 20, 184, -1));
 
         jLabel21.setFont(new java.awt.Font("Noto Sans", 2, 14)); // NOI18N
         jLabel21.setText("Một mùa hè nóng nực...");
@@ -389,9 +425,9 @@ public class ChatRoom extends javax.swing.JFrame {
         panelChat.setAlignmentX(0.0F);
         panelChat.setAlignmentY(0.0F);
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel1.setAlignmentX(0.0F);
-        jPanel1.setAlignmentY(0.0F);
+        panelTitle.setBackground(new java.awt.Color(255, 255, 255));
+        panelTitle.setAlignmentX(0.0F);
+        panelTitle.setAlignmentY(0.0F);
 
         lbTitleContact.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
         lbTitleContact.setText("conmeomunbencuaso");
@@ -406,12 +442,12 @@ public class ChatRoom extends javax.swing.JFrame {
 
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/icons8-Christmas Star-24.png"))); // NOI18N
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout panelTitleLayout = new javax.swing.GroupLayout(panelTitle);
+        panelTitle.setLayout(panelTitleLayout);
+        panelTitleLayout.setHorizontalGroup(
+            panelTitleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jSeparator1)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(panelTitleLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -424,12 +460,12 @@ public class ChatRoom extends javax.swing.JFrame {
                 .addComponent(jLabel2)
                 .addContainerGap())
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        panelTitleLayout.setVerticalGroup(
+            panelTitleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelTitleLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(panelTitleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(panelTitleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -439,23 +475,32 @@ public class ChatRoom extends javax.swing.JFrame {
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel3.setAlignmentX(0.0F);
-        jPanel3.setAlignmentY(0.0F);
+        panelBody.setBackground(new java.awt.Color(255, 255, 255));
+        panelBody.setAlignmentX(0.0F);
+        panelBody.setAlignmentY(0.0F);
 
         jScrollPane1.setBorder(null);
 
         jScrollPane1.setViewportView(listChat);
 
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1)
+        txtChatAll.setText("jLabel3");
+
+        javax.swing.GroupLayout panelChatListLayout = new javax.swing.GroupLayout(panelChatList);
+        panelChatList.setLayout(panelChatListLayout);
+        panelChatListLayout.setHorizontalGroup(
+            panelChatListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelChatListLayout.createSequentialGroup()
+                .addComponent(jScrollPane1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtChatAll))
         );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        panelChatListLayout.setVerticalGroup(
+            panelChatListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
+            .addGroup(panelChatListLayout.createSequentialGroup()
+                .addGap(146, 146, 146)
+                .addComponent(txtChatAll)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jSeparator3.setBackground(new java.awt.Color(204, 204, 255));
@@ -470,23 +515,28 @@ public class ChatRoom extends javax.swing.JFrame {
                 txtChatMouseClicked(evt);
             }
         });
+        txtChat.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtChatKeyPressed(evt);
+            }
+        });
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+        javax.swing.GroupLayout panelBodyLayout = new javax.swing.GroupLayout(panelBody);
+        panelBody.setLayout(panelBodyLayout);
+        panelBodyLayout.setHorizontalGroup(
+            panelBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(panelChatList, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelBodyLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(panelBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jSeparator3)
                     .addComponent(txtChat))
                 .addContainerGap())
         );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        panelBodyLayout.setVerticalGroup(
+            panelBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelBodyLayout.createSequentialGroup()
+                .addComponent(panelChatList, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 2, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -498,15 +548,15 @@ public class ChatRoom extends javax.swing.JFrame {
         panelChat.setLayout(panelChatLayout);
         panelChatLayout.setHorizontalGroup(
             panelChatLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(panelBody, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(panelTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         panelChatLayout.setVerticalGroup(
             panelChatLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelChatLayout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(panelTitle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(1, 1, 1)
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(panelBody, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         panlChatRoom.add(panelChat, "card3");
@@ -540,15 +590,22 @@ public class ChatRoom extends javax.swing.JFrame {
         txtChat.setText("");
     }//GEN-LAST:event_txtChatMouseClicked
 
+    private void txtChatKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtChatKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            String sms = txtChat.getText();
+            try {
+                client.chatAll(sms);
+            } catch (IOException ex) {
+                Logger.getLogger(ChatRoom.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_txtChatKeyPressed
+
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
+    public void showchatRoom() {
+
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Windows".equals(info.getName())) {
@@ -559,49 +616,43 @@ public class ChatRoom extends javax.swing.JFrame {
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(ChatRoom.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
 
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ChatRoom().setVisible(true);
-            }
-        });
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setVisible(true);
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel avartar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JLabel lbContact;
     private javax.swing.JLabel lbHome;
     private javax.swing.JLabel lbTitleContact;
-    private javax.swing.JList<Account> listAccount;
+    private static javax.swing.JLabel lbUsername;
+    private static javax.swing.JList<Account> listAccount;
     private javax.swing.JList<String> listChat;
+    private javax.swing.JPanel panelBody;
     private javax.swing.JPanel panelChat;
+    private javax.swing.JPanel panelChatList;
     private javax.swing.JPanel panelHeader;
     private javax.swing.JPanel panelHome;
     private javax.swing.JScrollPane panelListAccount;
     private javax.swing.JPanel panelProfile;
     private javax.swing.JPanel panelSearch;
+    private javax.swing.JPanel panelTitle;
     private javax.swing.JPanel panelTop;
     private javax.swing.JPanel panlChatRoom;
     private javax.swing.JPanel pannelContent;
     private javax.swing.JTextField txtChat;
+    private static javax.swing.JLabel txtChatAll;
     private javax.swing.JTextField txtSearch;
     // End of variables declaration//GEN-END:variables
 }

@@ -35,28 +35,30 @@ public class AccountItem extends javax.swing.JPanel implements ListCellRenderer<
 
     @Override
     public Component getListCellRendererComponent(JList<? extends Account> listAccount, Account account, int index, boolean isSelect, boolean bln) {
-        this.name.setText(account.getFullName());
-        //ImageIcon icon =  new ImageIcon(getClass().getResource("/Images/" + account.getImage() + ".jpg"));
-        //this.avatar.setIcon(icon);
-        //this.avatar.setForeground(Color.BLUE);
-        
-        customizeImageAvar(this.avatar, "../Images/" + account.getImage() + ".jpg");
+        if (account != null) {
+            this.name.setText(account.getFullName());
+            //ImageIcon icon =  new ImageIcon(getClass().getResource("/Images/" + account.getImage() + ".jpg"));
+            //this.avatar.setIcon(icon);
+            //this.avatar.setForeground(Color.BLUE);
 
-        // set Opaque to change background color of JLabel
-        name.setOpaque(true);
-        avatar.setOpaque(true);
+            customizeImageAvar(this.avatar, "../Images/unnamed.png");
 
-        // when select item
-        if (isSelect) {
-            name.setBackground(listAccount.getSelectionBackground());
-            avatar.setBackground(listAccount.getSelectionBackground());
-            setBackground(listAccount.getSelectionBackground());
-            itemAccount.setBackground(listAccount.getSelectionBackground());
-        } else { // when don't select
-            name.setBackground(listAccount.getBackground());
-            avatar.setBackground(listAccount.getBackground());
-            setBackground(listAccount.getBackground());
-            itemAccount.setBackground(listAccount.getBackground());
+            // set Opaque to change background color of JLabel
+            name.setOpaque(true);
+            avatar.setOpaque(true);
+
+            // when select item
+            if (isSelect) {
+                name.setBackground(listAccount.getSelectionBackground());
+                avatar.setBackground(listAccount.getSelectionBackground());
+                setBackground(listAccount.getSelectionBackground());
+                itemAccount.setBackground(listAccount.getSelectionBackground());
+            } else { // when don't select
+                name.setBackground(listAccount.getBackground());
+                avatar.setBackground(listAccount.getBackground());
+                setBackground(listAccount.getBackground());
+                itemAccount.setBackground(listAccount.getBackground());
+            }
         }
 
         return this;

@@ -494,41 +494,36 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_jLabel12MouseClicked
 
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_jCheckBox1ActionPerformed
 
     private void txtSignUpEmailFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtSignUpEmailFocusGained
-        // TODO add your handling code here:
         txtSignUpEmail.setText("");
     }//GEN-LAST:event_txtSignUpEmailFocusGained
 
     private void txtSignUpFullNameMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtSignUpFullNameMouseClicked
-        // TODO add your handling code here:
         txtSignUpFullName.setText("");
     }//GEN-LAST:event_txtSignUpFullNameMouseClicked
 
     private void txtSignUpPasswordFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtSignUpPasswordFocusGained
-        // TODO add your handling code here:
         txtSignUpPassword.setText("");
     }//GEN-LAST:event_txtSignUpPasswordFocusGained
 
     private void jLabel18MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel18MouseClicked
-        // TODO add your handling code here:
+       
     }//GEN-LAST:event_jLabel18MouseClicked
-
+    
     private void btnSignInMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSignInMouseClicked
         String username = txtSignInUsername.getText();
         String password = txtSignInPassword.getText();
         try {
-            Account act = client.signIn(username, password);
-            if (act == null) {
+            Account accountResult = client.signIn(username, password);
+            if (accountResult == null) {
                 System.out.println("Đăng nhập thất bại, vui lòng kiểm tra lại thông tin!");
             } else {
-                client.startReciveFormServer();
-                ChatRoom chatRoom = new ChatRoom();
-                // truyền client sang cho chatRoom ~
-                chatRoom.setClient(client);
-                chatRoom.show();
+                client.setAccount(accountResult);
+                ChatRoom chatRoom = new ChatRoom(client);
+                chatRoom.showchatRoom();
                 dispose();
             }
         } catch (IOException | ClassNotFoundException ex) {

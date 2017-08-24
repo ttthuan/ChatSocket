@@ -10,8 +10,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,28 +19,52 @@ import java.util.logging.Logger;
  * @author Totoro
  */
 public class Server {
-    private static final int PORT = 7777;
-    private static boolean running = true;
+    private static int PORT = 7777;
     private static ServerSocket socketServer = null;
     private static Socket socket = null;
-    private static ArrayList<Socket> listOfSocket = new ArrayList<Socket>();
-    private static ArrayList<Account> listOfAccount = new ArrayList<Account>();
-    private static Queue<String> queueOfMessenger = new LinkedList<String>();
-    private static int numberOfSendMember = 0;
+    private static final int maxNumberClient = 20;
+    private static final Service[] services = new Service[maxNumberClient];
+    private static boolean running = true;
+    private List<Account> accountsInDatabase = new ArrayList<Account>();
     
-    public static void main(String[] args) throws IOException {
-       
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Server.start();
-                } catch (IOException ex) {
-                    Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+
+    public List<Account> getAccounts() {
+        return accountsInDatabase;
+    }
+    
+    public void showAllAccount(){
+        String[] ip = new String[accountsInDatabase.size()];
+        Integer[] port = new Integer[accountsInDatabase.size()];
+        
+        synchronized(this){
+            int i = 0;
+            for(; i < accountsInDatabase.size(); i++){
+                int j = 0;
+                for(; j < services.length; j++){
+                    if(services[j] != null && services[i].getAccount().getUserName().equals(accountsInDatabase.get(i).getUserName())){
+                        port[i] = (services[j].getSocket().getPort());
+                        ip[i] = (services[j].getSocket().getRemoteSocketAddress().toString());
+                        accountsInDatabase.get(i).setIsOnline(true);
+                        break;
+                    }
                 }
             }
-        }).start();
+        }
+        
+        for(int i = 0; i < accountsInDatabase.size(); i++){
+            if(accountsInDatabase.get(i).isIsOnline()){
+                System.out.println(accountsInDatabase.get(i).getUserName() + " online " + ip[i] + " " + port[i]);
+            }else{
+                System.out.println(accountsInDatabase.get(i).getUserName() + " offline");
+            }
+        }
     }
+    
+    public Server() throws SQLException{
+        DataProvider dataProvider = new DataProvider();
+        accountsInDatabase = dataProvider.getAllAccount();
+    }
+    
 
     // lắng nghe các kết nối từ phía Client
     // khi gặp kết nối tạo ra một luồng phục vụ riêng cho mỗi Client.
@@ -50,11 +73,23 @@ public class Server {
         System.out.println("Listenning...");
         while (running) {
             socket = socketServer.accept();
-            listOfSocket.add(socket);
+            System.out.println("a client Connected!");
             
-            Service service = new Service((socket));
-            service.start();
-            System.out.println("Connected!");
+            int i;
+            for(i = 0; i < maxNumberClient; i++){
+                if(services[i] == null){
+                    (services[i] = new Service(socket, services)).start();
+                    break;
+                }
+            }
+            
+            if(i == maxNumberClient){
+                Package pck = new Package(Header.BUSY, "Server too busy. Try later.");
+                Transport transport = new Transport(socket);
+                transport.sendPackage(pck);
+                transport.close();
+                socket.close();
+            }
         }
     }
 
@@ -78,24 +113,9 @@ public class Server {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        if(account != null)
-            listOfAccount.add(account);
+        if(account != null){
+            account.setIsOnline(true);
+        }
         return account;
-    }
-    
-    public static void addMessengerIntoQueue(String mess){
-        queueOfMessenger.add(mess);
-    }
-    
-    public static Queue<String> getQueueMessenger(){
-        return queueOfMessenger;
-    }
-    
-    public static int getNumberOfMember(){
-        return numberOfSendMember;
-    }
-    
-    public static void setNumberOfMember(int num){
-        numberOfSendMember = num;
     }
 }

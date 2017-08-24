@@ -10,6 +10,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
@@ -21,7 +23,6 @@ import javax.swing.JOptionPane;
  */
 public class DataProvider {
 
-    //JDBC Driver for MS SQL Server 2014
     private final String driverName = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
     private final String connectionString = "jdbc:sqlserver://localhost:1433;databaseName=MMT;user=sa;password=123456";
     private Connection connection = null;
@@ -47,6 +48,25 @@ public class DataProvider {
         } catch (SQLException ex) {
             Logger.getLogger(Transport.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public List<Account> getAllAccount() throws SQLException{
+        List<Account> accounts = new ArrayList<Account>();
+        
+        connect();
+        
+        String sql = "Select Username, Password, Fullname from Account";
+        Statement statement = connection.createStatement();
+        
+        ResultSet rows = statement.executeQuery(sql);
+        
+        while(rows.next()){
+            Account account = new Account(rows.getString(1), rows.getString(2), rows.getString(3));
+            accounts.add(account);
+        }
+        
+        disConnect();
+        return accounts;
     }
 
     public Account login(String username, String password) throws SQLException {

@@ -7,6 +7,7 @@ package mmt;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.List;
 
 /**
  *
@@ -17,7 +18,7 @@ public class Client {
     // Attributes
     private Socket socketClient = null;
     private Account account = null;
-    private Service service = null;
+    private static Service service = null;
 
     public Socket getSocketClient() {
         return socketClient;
@@ -51,6 +52,7 @@ public class Client {
     public Client() {
 
     }
+
     // Hàm hành sự - Method
     // kết nối tới Client, tạo luồng phục vụ
     // chỗ này t muốn tách hàm ra nhưng không biết tách sao cho hay nên để vậy 
@@ -65,11 +67,6 @@ public class Client {
         socketClient.close();
     }
 
-    public void sendMessage() {
-        // gửi 1 tin nhắn tới server 
-        // server gửi đi cho 1 luồng #
-    }
-
     // Sent to server of register
     public boolean registerAccount(Account act) throws IOException, ClassNotFoundException {
         boolean result = false;
@@ -82,12 +79,13 @@ public class Client {
         if (pagServer.getHeader() == Header.REGISTER) {
             result = (boolean) pagServer.getData();
         }
-        
+
         return result;
     }
-    
-    public void startReciveFormServer(){
-        new Thread(new Service(socketClient)).start();
+
+    // start hàm run bên service
+    public void startReciveFormServer() throws IOException {
+        new Thread(service).start();
     }
 
     // Login with username, password
@@ -95,28 +93,19 @@ public class Client {
         return service.signIn(userName, password);
     }
 
-    // - 1 = logout
-    public boolean logout() throws IOException, ClassNotFoundException {
-        int out = -1;
-        Package pagLogout = new Package(Header.LOGOUT, out);
-
-        Transport transport = new Transport(socketClient);
-        transport.sendPackage(pagLogout);
-
-        transport.recivePackage();
-        return false;
+    public static void showListAccount(List<Account> listOfAccount) {
+        ChatRoom.showListOfAccount(listOfAccount);
     }
 
-    public void chat(Account act) {
-
+    static void showListChatAll(String sms) {
+        ChatRoom.showListChatAll(sms);
     }
-
-    public void sendFile(String fileName) {
-
+    
+    void chatAll(String sms) throws IOException {
+        service.chatAll(sms);
     }
-
-    public void testGitHub() {
-        System.out.println("run GitHub !");
+    
+    public static void setUsernameOnUi(String username){
+        ChatRoom.setUsernameOnUi(username);
     }
-
 }

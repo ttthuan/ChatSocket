@@ -7,6 +7,7 @@ package mmt;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,39 +18,66 @@ import java.util.logging.Logger;
 class Service implements Runnable {
 
     Socket socket = null;
+    Transport transport = null;
 
-    public Service(Socket socket) {
+    public Service(Socket socket) throws IOException {
         this.socket = socket;
+        transport = new Transport(socket);
     }
-    
+
     // Login with username, password
     public Account signIn(String userName, String password) throws IOException, ClassNotFoundException {
         // gửi 2 chuỗi "đăng nhập" sang cho server kiểm tra
-        Account result = null;
         String pagData = userName + "," + password;
         Package pagLogin = new Package(Header.LOGIN, pagData);
 
-        Transport transport = new Transport(socket);
         transport.sendPackage(pagLogin);
-
-        // nhận thông tin đăng nhập hợp lệ: không hợp lệ ?
-        Package pagServer = transport.recivePackage();
-        if (pagServer.getHeader() == Header.LOGIN) {
-            result = (Account) pagServer.getData();
+        
+        Account account = null;
+        
+        Package pckResult = transport.recivePackage();
+        if(pckResult.getHeader() == Header.LOGIN){
+            account = (Account) pckResult.getData();
         }
-        return result;
+        
+        return account;
+    }
+
+    void chatAll(String sms) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Package pag = new Package();
+                    pag.setHeader(Header.MULTIPECHAT);
+                    pag.setData(sms);
+
+                    transport.sendPackage(pag);
+                    System.out.println(sms);
+                } catch (IOException ex) {
+                    Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }).start();
     }
 
     @Override
     public void run() {
         // xử lý nhận
-        Transport transport = new Transport(socket);
         try {
             while (true) {
-                Package pagClient = (Package) transport.recivePackage();
-                if (null != pagClient.getHeader()) {
-                    switch (pagClient.getHeader()) {
-
+                Package pagServer = (Package) transport.recivePackage();
+                if (null != pagServer.getHeader()) {
+                    switch (pagServer.getHeader()) {
+                        case LISTACCOUNT:
+                            List<Account> list = (List<Account>) pagServer.getData();
+                            Client.showListAccount(list);
+                            break;
+                        case MULTIPECHAT:
+                            String sms = (String) pagServer.getData();
+                            System.out.println(sms);
+                            Client.showListChatAll(sms);
+                            break;
                     }
                 }
             }
@@ -57,4 +85,5 @@ class Service implements Runnable {
             Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
 }

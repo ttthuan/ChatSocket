@@ -20,12 +20,14 @@ public class Transport {
     private ObjectOutputStream send = null;
     private ObjectInputStream recive = null;
     
-    public Transport(Socket socket) {
+    public Transport(Socket socket) throws IOException{
         this.socket = socket;
+        
+        
     }
     
     // send a package through network
-    public void sendPackage(Package pag) throws IOException {
+    public void sendPackage(Package pag) throws IOException{
         send = new ObjectOutputStream(socket.getOutputStream());
         send.writeObject(pag);
         send.flush();
@@ -33,9 +35,15 @@ public class Transport {
 
     // recive a package through network
     public Package recivePackage() throws IOException, ClassNotFoundException{
-        Package pag = null;
         recive = new ObjectInputStream(socket.getInputStream());
+        Package pag = null;
         pag = (Package) recive.readObject();
         return pag;
     }
+    
+    public void close() throws IOException{
+        send.close();
+        recive.close();
+    }
+
 }

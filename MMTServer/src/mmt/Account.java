@@ -17,8 +17,16 @@ public class Account implements Serializable {
     private String password;
     private String fullName;
     private String image;
-    
+    private boolean isOnline = false;
 
+    public boolean isIsOnline() {
+        return isOnline;
+    }
+
+    public void setIsOnline(boolean isOnline) {
+        this.isOnline = isOnline;
+    }
+    
     public String getUserName() {
         return userName;
     }
@@ -63,17 +71,12 @@ public class Account implements Serializable {
         this.fullName = fullName;
         this.image = image;
     }
-
-    // Danh sách hàm hành sự của lớp "Tài Khoản"
-    public void register(){
-        
-    }
     
-    public void login(String userName, String password){
-        
-    }
-    
-    public void logOut(){
-        
+    @Override
+    public boolean equals(Object obj) {
+        if(this.userName.equals(((Account)obj).getUserName())){
+            return true;
+        }
+        return false;
     }
 }

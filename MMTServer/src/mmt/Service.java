@@ -18,18 +18,37 @@ import java.util.logging.Logger;
 class Service extends Thread {
 
     private Socket socket = null;
-    private ArrayList<Account> listOfAccount = null;
-    Transport transport;
+    private Account account = null;
+    private final Service[] services;
+    private int maxNumberClient;
+    private Transport transport = null;
+    private SendListAccountToUser sendListAccount = null;
 
-    public Service(Socket socket) {
-        this.socket = socket;
+    private boolean debug = true;
+
+    public Socket getSocket() {
+        return socket;
     }
-    
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public Transport getTransport() {
+        return transport;
+    }
+
+    public Service(Socket socket, Service[] services) throws IOException {
+        this.socket = socket;
+        this.services = services;
+        this.maxNumberClient = services.length;
+        transport = new Transport(socket);
+    }
+
     @Override
     public void run() {
         // nhận
         try {
-            transport = new Transport(socket);
             while (true) {
                 Package pagClient = (Package) transport.recivePackage();
                 if (null != pagClient.getHeader()) {
@@ -50,51 +69,96 @@ class Service extends Thread {
                             String userName = login[0];
                             String password = login[1];
                             // debug
-                            System.out.println(userName + " " + password);
-                            
-                            Account resultLogin = login(userName, password);
-                            
+                            if (debug) {
+                                System.out.println(userName + " " + password);
+                            }
+
+                            Account resultLogin = null;
+
+                            synchronized (this) {
+                                resultLogin = login(userName, password);
+                            }
+                            account = resultLogin;
+
                             Package pagLogin = new Package(Header.LOGIN, resultLogin);
                             transport.sendPackage(pagLogin);
+
+                            sendListAccount = new SendListAccountToUser(socket, services, this);
+                            sendListAccount.start();
+
                             break;
                         case LOGOUT:
                             // input: Header.OUTPUT
                             // output: void
                             break;
                         case SINGLECHAT:
-                            
-                            break;    
-                        case MULTIPECHAT:
                             String messenger = (String) pagClient.getData();
-                            Server.addMessengerIntoQueue(messenger);
+                            String[] contents = messenger.split(",");
+
+                            synchronized (this) {
+                                Package pck = new Package(Header.MULTIPECHAT, contents[1]);
+                                for (int i = 0; i < maxNumberClient; i++) {
+                                    if (services[i] != null && services[i].getAccount().getUserName().equals(contents[0])) {
+                                        services[i].getTransport().sendPackage(pck);
+                                        break;
+                                    }
+                                }
+                            }
+
+                            break;
+                        case MULTIPECHAT:
+                            String messengers = (String) pagClient.getData();
+                            System.out.println(messengers);
+
+                            synchronized (this) {
+                                Package pck = new Package(Header.MULTIPECHAT, messengers);
+                                for (int i = 0; i < maxNumberClient; i++) {
+                                    if (services[i] != null && services[i] != this) {
+                                        services[i].getTransport().sendPackage(pck);
+                                    }
+                                }
+                            }
+
                             break;
                         default:
                             break;
                     }
                 }
             }
-        } catch (IOException | ClassNotFoundException ex) {
+        } catch (IOException ex) {
             Logger.getLogger(ex.toString());
-        }
-        
-        /// xử lý gửi
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Transport transport = new Transport(socket);
-                while(true){
-                    if(!Server.getQueueMessenger().isEmpty()){
-                        try {
-                            Package pag = new Package(Header.MULTIPECHAT, Server.getQueueMessenger().peek());
-                            transport.sendPackage(pag);
-                            ////////////////////////////////////////////////////
-                        } catch (IOException ex) {
-                            Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+            System.out.println("Lỗi nhận dữ liệu từ client ");
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Lỗi không tìm thấy class trong class transport ");
+        } finally {
+            if(sendListAccount != null){
+                sendListAccount.setIsRunning(false);
+            }
+            
+            synchronized (this) {
+                for (int i = 0; i < maxNumberClient; i++) {
+                    if (services[i] == this) {
+                        services[i] = null;
                     }
                 }
             }
-        }).start();
+            
+            try {
+                if(transport != null)
+                    transport.close();
+            } catch (IOException ex) {
+                Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("Không thể đóng stream");
+            }
+            
+            try {
+                socket.close();
+            } catch (IOException ex) {
+                Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("Không thể đóng socket client");
+            }
+        }
     }
 
     public boolean createAccount(Account act) throws IOException {
