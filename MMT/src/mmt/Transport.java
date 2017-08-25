@@ -22,8 +22,6 @@ public class Transport {
     
     public Transport(Socket socket) throws IOException{
         this.socket = socket;
-        
-        
     }
     
     // send a package through network

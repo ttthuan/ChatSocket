@@ -92,26 +92,33 @@ class Service extends Thread {
                             // output: void
                             break;
                         case SINGLECHAT:
-                            String messenger = (String) pagClient.getData();
-                            String[] contents = messenger.split(",");
-
+                            PackageChat pckChatAPerson = (PackageChat) pagClient.getData();
+                            
+                            // debug
+                            System.out.println(pckChatAPerson);
+                            
+                            String[] content = pckChatAPerson.getContent().split(";");
+                            pckChatAPerson.setContent(content[1]);
+                            
                             synchronized (this) {
-                                Package pck = new Package(Header.MULTIPECHAT, contents[1]);
                                 for (int i = 0; i < maxNumberClient; i++) {
-                                    if (services[i] != null && services[i].getAccount().getUserName().equals(contents[0])) {
-                                        services[i].getTransport().sendPackage(pck);
+                                    if (services[i] != null && services[i].getAccount().getUserName().equals(content[0])) {
+                                        Package pckAPerson = new Package(Header.SINGLECHAT, pckChatAPerson);
+                                        services[i].getTransport().sendPackage(pckAPerson);
                                         break;
                                     }
                                 }
                             }
-
+                            
                             break;
                         case MULTIPECHAT:
-                            String messengers = (String) pagClient.getData();
-                            System.out.println(messengers);
-
+                            PackageChat pckChat = (PackageChat) pagClient.getData();
+                            
+                            // debug
+                            System.out.println(pckChat);
+                            
                             synchronized (this) {
-                                Package pck = new Package(Header.MULTIPECHAT, messengers);
+                                Package pck = new Package(Header.MULTIPECHAT, pckChat);
                                 for (int i = 0; i < maxNumberClient; i++) {
                                     if (services[i] != null && services[i] != this) {
                                         services[i].getTransport().sendPackage(pck);
@@ -127,15 +134,15 @@ class Service extends Thread {
             }
         } catch (IOException ex) {
             Logger.getLogger(ex.toString());
-            System.out.println("Lỗi nhận dữ liệu từ client ");
+            System.out.println("Lỗi nhận dữ liệu từ client");
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println("Lỗi không tìm thấy class trong class transport ");
+            System.out.println("Lỗi không tìm thấy class trong class transport");
         } finally {
-            if(sendListAccount != null){
+            if (sendListAccount != null) {
                 sendListAccount.setIsRunning(false);
             }
-            
+
             synchronized (this) {
                 for (int i = 0; i < maxNumberClient; i++) {
                     if (services[i] == this) {
@@ -143,15 +150,16 @@ class Service extends Thread {
                     }
                 }
             }
-            
+
             try {
-                if(transport != null)
+                if (transport != null) {
                     transport.close();
+                }
             } catch (IOException ex) {
                 Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
                 System.out.println("Không thể đóng stream");
             }
-            
+
             try {
                 socket.close();
             } catch (IOException ex) {

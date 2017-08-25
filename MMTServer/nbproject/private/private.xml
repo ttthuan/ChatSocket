@@ -3,13 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/F:/Document/Netbean/New/MMT/MMTServer/src/mmt/SendStatusOfListAccountToUser.java</file>
-            <file>file:/F:/Document/Netbean/New/MMT/MMTServer/src/mmt/Package.java</file>
-            <file>file:/F:/Document/Netbean/New/MMT/MMTServer/src/mmt/Transport.java</file>
-            <file>file:/F:/Document/Netbean/New/MMT/MMTServer/src/mmt/Server.java</file>
-            <file>file:/F:/Document/Netbean/New/MMT/MMTServer/src/mmt/Account.java</file>
-            <file>file:/F:/Document/Netbean/New/MMT/MMTServer/src/mmt/Service.java</file>
-            <file>file:/F:/Document/Netbean/New/MMT/MMTServer/src/mmt/MMTServer.java</file>
+            <file>file:/F:/Document/Netbean/MMT/MMTServer/src/mmt/Transport.java</file>
+            <file>file:/F:/Document/Netbean/MMT/MMTServer/src/mmt/SendListAccountToUser.java</file>
+            <file>file:/F:/Document/Netbean/MMT/MMTServer/src/mmt/Service.java</file>
+            <file>file:/F:/Document/Netbean/MMT/MMTServer/src/mmt/Server.java</file>
         </group>
     </open-files>
 </project-private>

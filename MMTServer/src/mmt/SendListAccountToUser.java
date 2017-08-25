@@ -74,7 +74,7 @@ public class SendListAccountToUser extends Thread {
             Package pck = new Package(Header.LISTACCOUNT, accounts);
 
             //debug
-            System.out.println(account.getUserName() + " list đã gửi: " + accounts.size());
+            System.out.println(service.getAccount().getUserName() + " đã gửi list: " + accounts.size());
 
             try {
                 transport.sendPackage(pck);
@@ -92,7 +92,7 @@ public class SendListAccountToUser extends Thread {
             transport.close();
         } catch (IOException ex) {
             Logger.getLogger(SendListAccountToUser.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println("lỗi đóng stream class gửi list account cho user");
+            System.out.println("lỗi đóng stream gửi list account cho user");
         }
     }
 

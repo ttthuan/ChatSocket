@@ -43,17 +43,31 @@ class Service implements Runnable {
         return account;
     }
 
-    void chatAll(String sms) {
+    void chatAll(PackageChat pckChat) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    Package pag = new Package();
-                    pag.setHeader(Header.MULTIPECHAT);
-                    pag.setData(sms);
+                    Package pag = new Package(Header.MULTIPECHAT, pckChat);
+                    transport.sendPackage(pag);
+                    System.out.println(pckChat);
+                } catch (IOException ex) {
+                    Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                    
+            }
+        }).start();
+    }
+    
+    void chatWithAPerson(PackageChat pckChat) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Package pag = new Package(Header.SINGLECHAT, pckChat);
 
                     transport.sendPackage(pag);
-                    System.out.println(sms);
+                    System.out.println("Chat with a person " + pckChat);
                 } catch (IOException ex) {
                     Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -74,9 +88,12 @@ class Service implements Runnable {
                             Client.showListAccount(list);
                             break;
                         case MULTIPECHAT:
-                            String sms = (String) pagServer.getData();
-                            System.out.println(sms);
-                            Client.showListChatAll(sms);
+                            PackageChat pckChat = (PackageChat) pagServer.getData();
+                            Client.showListChatAll(pckChat);
+                            break;
+                        case SINGLECHAT:
+                            PackageChat pckChatAPerson = (PackageChat) pagServer.getData();
+                            Client.showListChatAPerson(pckChatAPerson);
                             break;
                     }
                 }

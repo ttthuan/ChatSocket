@@ -6,7 +6,6 @@
 package mmt;
 
 import java.awt.AlphaComposite;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -20,10 +19,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
-/**
- *
- * @author Totoro
- */
+
 public class AccountItem extends javax.swing.JPanel implements ListCellRenderer<Account> {
 
     /**

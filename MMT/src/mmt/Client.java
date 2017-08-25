@@ -16,9 +16,9 @@ import java.util.List;
 public class Client {
 
     // Attributes
-    private Socket socketClient = null;
-    private Account account = null;
-    private static Service service = null;
+    public Socket socketClient = null;
+    public static Account account = null;
+    public static Service service = null;
 
     public Socket getSocketClient() {
         return socketClient;
@@ -97,12 +97,20 @@ public class Client {
         ChatRoom.showListOfAccount(listOfAccount);
     }
 
-    static void showListChatAll(String sms) {
-        ChatRoom.showListChatAll(sms);
+    static void showListChatAll(PackageChat pckChat) {
+        ChatRoom.showListChatAll(pckChat);
     }
     
-    void chatAll(String sms) throws IOException {
-        service.chatAll(sms);
+    static void showListChatAPerson(PackageChat pckChat) {
+        ChatRoom.showListChatAPerson(pckChat);
+    }
+    
+    void chatAll(PackageChat pckChat){
+        service.chatAll(pckChat);
+    }
+    
+    void chatWithAPerson(PackageChat pckChat){
+        service.chatWithAPerson(pckChat);
     }
     
     public static void setUsernameOnUi(String username){

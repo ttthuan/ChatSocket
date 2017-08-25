@@ -7,10 +7,7 @@ package mmt;
 
 import java.io.Serializable;
 
-/**
- *
- * @author Totoro
- */
+
 public class Account implements Serializable {
 
     private String userName;
@@ -71,9 +68,11 @@ public class Account implements Serializable {
         this.fullName = fullName;
         this.image = image;
     }
-    
+
     @Override
     public boolean equals(Object obj) {
+        if(obj == null)
+            return false;
         if(this.userName.equals(((Account)obj).getUserName())){
             return true;
         }
