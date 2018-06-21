@@ -60,6 +60,8 @@ public class Account implements Serializable {
         this.userName = userName;
         this.password = password;
         this.fullName = fullName;
+        image = "";
+        isOnline = false;
     }
     
     public Account(String userName, String password, String fullName, String image) {
@@ -67,11 +69,12 @@ public class Account implements Serializable {
         this.password = password;
         this.fullName = fullName;
         this.image = image;
+        isOnline = false;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if(obj == null)
+        if(this == null || obj == null)
             return false;
         if(this.userName.equals(((Account)obj).getUserName())){
             return true;

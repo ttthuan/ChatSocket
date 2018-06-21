@@ -36,7 +36,7 @@ public class CustomizeAbstractListChat extends AbstractListModel<PackageChat> {
 
     @Override
     public PackageChat getElementAt(int index) {
-        if (index >= dsChat.size()) {
+        if (dsChat.isEmpty() || index >= dsChat.size()) {
             return null;
         }
         return dsChat.get(index);

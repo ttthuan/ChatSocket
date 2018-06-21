@@ -17,6 +17,7 @@ public class PackageChat implements Serializable {
     private String content;
     private int h;
     private int m;
+    private boolean isFile = false;
 
     public PackageChat(Account account, String content, int h, int m) {
         this.account = account;
@@ -56,6 +57,16 @@ public class PackageChat implements Serializable {
     public void setM(int m) {
         this.m = m;
     }
+
+    public boolean isIsFile() {
+        return isFile;
+    }
+
+    public void setIsFile(boolean isFile) {
+        this.isFile = isFile;
+    }
+    
+    
 
     @Override
     public boolean equals(Object obj) {

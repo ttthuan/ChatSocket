@@ -33,17 +33,14 @@ public class AccountItem extends javax.swing.JPanel implements ListCellRenderer<
     public Component getListCellRendererComponent(JList<? extends Account> listAccount, Account account, int index, boolean isSelect, boolean bln) {
         if (account != null) {
             this.name.setText(account.getFullName());
-            //ImageIcon icon =  new ImageIcon(getClass().getResource("/Images/" + account.getImage() + ".jpg"));
-            //this.avatar.setIcon(icon);
-            //this.avatar.setForeground(Color.BLUE);
 
             customizeImageAvar(this.avatar, "../Images/unnamed.png");
-
-            // set Opaque to change background color of JLabel
-            name.setOpaque(true);
-            avatar.setOpaque(true);
-
-            // when select item
+            try {
+                btnOnline.setIcon(new ImageIcon(ImageIO.read(AccountItem.class.getResource("../Images/checkbox-circle.png"))));
+            } catch (IOException ex) {
+                Logger.getLogger(AccountItem.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
             if (isSelect) {
                 name.setBackground(listAccount.getSelectionBackground());
                 avatar.setBackground(listAccount.getSelectionBackground());
@@ -55,6 +52,11 @@ public class AccountItem extends javax.swing.JPanel implements ListCellRenderer<
                 setBackground(listAccount.getBackground());
                 itemAccount.setBackground(listAccount.getBackground());
             }
+            
+            name.setOpaque(false);
+            avatar.setOpaque(false);
+            btnOnline.setOpaque(false);
+            this.setOpaque(true);
         }
 
         return this;
@@ -122,25 +124,22 @@ public class AccountItem extends javax.swing.JPanel implements ListCellRenderer<
     private void initComponents() {
 
         itemAccount = new javax.swing.JPanel();
+        btnOnline = new javax.swing.JLabel();
         avatar = new javax.swing.JLabel();
         name = new javax.swing.JLabel();
-        jRadioButton1 = new javax.swing.JRadioButton();
 
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        itemAccount.setBackground(new java.awt.Color(240, 244, 248));
+        itemAccount.setBackground(new java.awt.Color(226, 238, 246));
         itemAccount.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        btnOnline.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/checkbox-circle.png"))); // NOI18N
+        itemAccount.add(btnOnline, new org.netbeans.lib.awtextra.AbsoluteConstraints(43, 34, -1, -1));
         itemAccount.add(avatar, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, 60, 60));
 
-        name.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
-        name.setText("conmeomunbencuaso");
+        name.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        name.setText("Trinh Thanh Thuận");
         itemAccount.add(name, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 10, -1, -1));
-
-        jRadioButton1.setBackground(new java.awt.Color(240, 244, 248));
-        jRadioButton1.setForeground(new java.awt.Color(0, 51, 51));
-        jRadioButton1.setSelected(true);
-        jRadioButton1.setText("Online");
-        itemAccount.add(jRadioButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 30, -1, 20));
 
         add(itemAccount, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 250, 60));
     }// </editor-fold>//GEN-END:initComponents
@@ -148,8 +147,8 @@ public class AccountItem extends javax.swing.JPanel implements ListCellRenderer<
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel avatar;
+    private javax.swing.JLabel btnOnline;
     private javax.swing.JPanel itemAccount;
-    private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JLabel name;
     // End of variables declaration//GEN-END:variables
 

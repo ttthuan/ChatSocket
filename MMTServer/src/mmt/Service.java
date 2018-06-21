@@ -7,14 +7,9 @@ package mmt;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author Totoro
- */
 class Service extends Thread {
 
     private Socket socket = null;
@@ -23,6 +18,9 @@ class Service extends Thread {
     private int maxNumberClient;
     private Transport transport = null;
     private SendListAccountToUser sendListAccount = null;
+    private static int PORT_SERVER_FILE = 60602;
+    private static String HOST_SERVER_FILE = "localhost";
+    private boolean isRuning = true;
 
     private boolean debug = true;
 
@@ -38,7 +36,7 @@ class Service extends Thread {
         return transport;
     }
 
-    public Service(Socket socket, Service[] services) throws IOException {
+    public Service(Socket socket, Service[] services) {
         this.socket = socket;
         this.services = services;
         this.maxNumberClient = services.length;
@@ -49,19 +47,32 @@ class Service extends Thread {
     public void run() {
         // nhận
         try {
-            while (true) {
+            while (isRuning) {
                 Package pagClient = (Package) transport.recivePackage();
                 if (null != pagClient.getHeader()) {
                     switch (pagClient.getHeader()) {
-                        // create account for label REGISTER
+
                         case REGISTER:
                             Account act = ((Account) pagClient.getData());
-                            boolean resultRegister = createAccount(act);
 
-                            Package pagRegister = new Package(Header.REGISTER, resultRegister);
+                            // debug
+                            //System.out.println("đăng ký " + act.getUserName() + " " + act.getPassword());
+                            boolean resultRegister = signup(act);
+                            if (resultRegister) {
+                                // log file
+                                WriteFileLog.writeFileLog(act.getUserName(), TYPELOG.INFORMATION, "Register successfull");
+                            } else {
+                                // log file
+                                WriteFileLog.writeFileLog(act.getUserName(), TYPELOG.INFORMATION, "Register fail");
+                            }
+
+                            Package pagRegister = new Package(Header.REGISTER, new Boolean(resultRegister));
                             transport.sendPackage(pagRegister);
+
+                            // debug
+                            //System.out.println("đã có kết quả đăng ký " + resultRegister);
                             break;
-                        // check account for label LOGIN
+
                         case LOGIN:
                             String strLog = (String) pagClient.getData();
                             String[] login = strLog.split(",");
@@ -69,63 +80,259 @@ class Service extends Thread {
                             String userName = login[0];
                             String password = login[1];
                             // debug
-                            if (debug) {
-                                System.out.println(userName + " " + password);
-                            }
+//                            if (debug) {
+//                                System.out.println(userName + " " + password);
+//                            }
 
                             Account resultLogin = null;
 
                             synchronized (this) {
-                                resultLogin = login(userName, password);
+                                resultLogin = signIn(userName, password);
                             }
+
                             account = resultLogin;
+                            if (resultLogin != null) {
+                                // log file
+                                WriteFileLog.writeFileLog(userName, TYPELOG.INFORMATION, "SignIn successfull");
+                            } else {
+                                // log file
+                                WriteFileLog.writeFileLog(userName, TYPELOG.INFORMATION, "SignIn fail");
+                            }
 
                             Package pagLogin = new Package(Header.LOGIN, resultLogin);
                             transport.sendPackage(pagLogin);
 
-                            sendListAccount = new SendListAccountToUser(socket, services, this);
-                            sendListAccount.start();
-
+                            if (resultLogin != null) {
+                                if (sendListAccount == null) {
+                                    sendListAccount = new SendListAccountToUser(socket, services, account);
+                                    sendListAccount.start();
+                                }
+                            }
                             break;
+
                         case LOGOUT:
-                            // input: Header.OUTPUT
-                            // output: void
+//                            synchronized (this) {
+//                                for (int i = 0; i < maxNumberClient; i++) {
+//                                    if (services[i] != null && 
+//                                            services[i].getAccount().getUserName().equals(account.getUserName())) {
+//                                        services[i].account = null;
+//                                        if (services[i].sendListAccount != null) {
+//                                            services[i].sendListAccount.stop();
+//                                            services[i].sendListAccount = null;
+//                                        }
+//                                    }
+//                                }
+//                            }
+                            synchronized (this) {
+                                if(account != null)
+                                    account = null;
+                                if (sendListAccount != null) {
+                                    sendListAccount.setIsRunning(false);
+                                    sendListAccount.stop();
+                                    sendListAccount = null;
+                                }
+                            }
+
+                            String userLogout = (String) pagClient.getData();
+
+                            // debug
+                            //System.out.println("user " + userLogout + " logout");
+                            // log file
+                            WriteFileLog.writeFileLog(userLogout, TYPELOG.INFORMATION, "Request logout");
+
+                            Package pckLogout = new Package(Header.LOGOUT, new String("Successfull"));
+                            transport.sendPackage(pckLogout);
+
+                            // debug
+                            //System.out.println(userLogout + " logout thành công");
+                            // log file
+                            WriteFileLog.writeFileLog(userLogout, TYPELOG.INFORMATION, "Logout successfull");
+
                             break;
                         case SINGLECHAT:
-                            PackageChat pckChatAPerson = (PackageChat) pagClient.getData();
-                            
-                            // debug
-                            System.out.println(pckChatAPerson);
-                            
-                            String[] content = pckChatAPerson.getContent().split(";");
-                            pckChatAPerson.setContent(content[1]);
-                            
-                            synchronized (this) {
-                                for (int i = 0; i < maxNumberClient; i++) {
-                                    if (services[i] != null && services[i].getAccount().getUserName().equals(content[0])) {
-                                        Package pckAPerson = new Package(Header.SINGLECHAT, pckChatAPerson);
-                                        services[i].getTransport().sendPackage(pckAPerson);
-                                        break;
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    PackageChat pckChatAPerson = (PackageChat) pagClient.getData();
+
+                                    // debug
+                                    //System.out.println(pckChatAPerson);
+                                    String[] content = pckChatAPerson.getContent().split(";");
+                                    pckChatAPerson.setContent(content[1]);
+
+                                    synchronized (this) {
+                                        for (int i = 0; i < maxNumberClient; i++) {
+                                            if (services[i] != null && services[i].getAccount().getUserName().equals(content[0])) {
+                                                Package pckAPerson = new Package(Header.SINGLECHAT, pckChatAPerson);
+                                                try {
+                                                    services[i].getTransport().sendPackage(pckAPerson);
+                                                } catch (IOException ex) {
+                                                    // log file
+                                                    WriteFileLog.writeFileLog("service " + account.getUserName(), TYPELOG.ERROR, ex.getMessage());
+                                                    Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
+                                                }
+                                                break;
+                                            }
+                                        }
                                     }
                                 }
-                            }
-                            
+                            }).start();
+
                             break;
                         case MULTIPECHAT:
-                            PackageChat pckChat = (PackageChat) pagClient.getData();
-                            
-                            // debug
-                            System.out.println(pckChat);
-                            
-                            synchronized (this) {
-                                Package pck = new Package(Header.MULTIPECHAT, pckChat);
-                                for (int i = 0; i < maxNumberClient; i++) {
-                                    if (services[i] != null && services[i] != this) {
-                                        services[i].getTransport().sendPackage(pck);
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    PackageChat pckChat = (PackageChat) pagClient.getData();
+
+                                    // debug
+                                    //System.out.println(pckChat);
+                                    synchronized (this) {
+                                        Package pck = new Package(Header.MULTIPECHAT, pckChat);
+                                        for (int i = 0; i < maxNumberClient; i++) {
+                                            if (services[i] != null && !services[i].getAccount().getUserName().equals(account.getUserName())) {
+                                                try {
+                                                    services[i].getTransport().sendPackage(pck);
+                                                } catch (IOException ex) {
+                                                    // log file
+                                                    WriteFileLog.writeFileLog("service " + account.getUserName(), TYPELOG.ERROR, ex.getMessage());
+                                                    Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
+                                                }
+                                            }
+                                        }
                                     }
                                 }
-                            }
+                            }).start();
+                            break;
+                        case SENDFILE:
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        String notifiSendFile = (String) pagClient.getData();
+                                        String[] contents = notifiSendFile.split(";");
+                                        // [0] username send; [1] full name; [2] user recive; [3] file name
 
+                                        // thông báo cho user nhận file
+                                        synchronized (this) {
+                                            Package pckNotifiSendFile = new Package(Header.RECEIVEFILE, contents[0] + ";" + contents[1] + ";" + contents[3]);
+                                            for (int i = 0; i < maxNumberClient; i++) {
+                                                if (services[i] != null && services[i].getAccount().getUserName().equals(contents[2])) {
+                                                    try {
+                                                        services[i].getTransport().sendPackage(pckNotifiSendFile);
+                                                        break;
+                                                    } catch (IOException ex) {
+                                                        // log file
+                                                        WriteFileLog.writeFileLog("service " + account.getUserName(), TYPELOG.ERROR, ex.getMessage());
+                                                        Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        // kết nối qua server gửi file
+                                        Socket socketConnectServerFile = new Socket(HOST_SERVER_FILE, PORT_SERVER_FILE);
+                                        Transport transportFile = new Transport(socketConnectServerFile);
+
+                                        // thông báo cho server file, có 2 user cần trao đổi file
+                                        Package pckRequest = new Package(Header.HASREQUEST, contents[0] + ";" + contents[2]);
+                                        transportFile.sendPackage(pckRequest);
+
+                                        // nhận port server file đã mở
+                                        Package pckFile = transportFile.recivePackage();
+
+                                        // đóng transport
+                                        transportFile.close();
+                                        socketConnectServerFile.close();
+
+                                        if (pckFile != null) {
+                                            switch (pckFile.getHeader()) {
+                                                case BUSY:
+                                                    // debug
+                                                    //System.out.println(pckFile.getData().toString());
+                                                    break;
+                                                case PORT:
+                                                    // debug
+                                                    //System.out.println("Thông tin 2 port " + pckFile.getData());
+
+                                                    String[] ports = pckFile.getData().toString().split(";");
+
+                                                    // lấy port chuyển về cho 2 client
+                                                    // chuyển port cho client gửi
+                                                    Package pckPortSend = new Package(Header.PORTSEND, ports[0]);
+                                                    transport.sendPackage(pckPortSend);
+
+                                                    // chuyển port cho client nhận
+                                                    synchronized (this) {
+                                                        Package pckPortReceive = new Package(Header.PORTRECEIVE, ports[1]);
+                                                        for (int i = 0; i < maxNumberClient; i++) {
+                                                            if (services[i] != null && services[i].getAccount().getUserName().equals(contents[2])) {
+                                                                services[i].getTransport().sendPackage(pckPortReceive);
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+
+                                                    break;
+                                            }
+                                        } else {
+                                            // debug
+                                            System.out.println("Thông tin server file gửi rỗng");
+                                        }
+                                    } catch (IOException ex) {
+                                        // log file
+                                        WriteFileLog.writeFileLog("service " + account.getUserName(), TYPELOG.ERROR, ex.getMessage());
+                                        Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
+                                    } catch (ClassNotFoundException ex) {
+                                        // log file
+                                        WriteFileLog.writeFileLog("service " + account.getUserName(), TYPELOG.ERROR, ex.getMessage());
+                                        Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+                                }
+                            }).start();
+                            break;
+
+                        case CLOSECLIENT:
+                            // debug
+                            System.out.println("client muốn close");
+
+                            Package pckCloseClient = new Package(Header.CLOSECLIENT, new String("Successfull"));
+                            transport.sendPackage(pckCloseClient);
+
+                            // debug
+                            System.out.println("close thành công");
+                            break;
+                        case CHANGEPASS:
+                            String contentChangePass = (String) pagClient.getData();
+                            String[] contentsCP = contentChangePass.split(";");
+                            // [0] usename, [1] passwordold, [2] passwordnew
+
+                            // debug
+                            System.out.println("Nội dung change pass client gửi " + contentChangePass);
+                            // change pass
+                            // kiểm tra username và password old có hợp lệ hay không
+                            // hợp lệ thì thay đổi pass, ngược lại thì cảnh báo
+                            boolean result = changePass(contentsCP[0], contentsCP[1], contentsCP[2]);
+                            if (result == true) {
+                                // hợp lệ
+                                account.setPassword(contentsCP[2]);
+                                Package pckCPSuccess = new Package(Header.CHANGEPASS, "Successfull;" + contentsCP[2]);
+                                transport.sendPackage(pckCPSuccess);
+
+                                // debug
+                                System.out.println("Hợp lệ " + pckCPSuccess.getData());
+                                // log file
+                                WriteFileLog.writeFileLog(contentsCP[0], TYPELOG.INFORMATION, "Change password");
+
+                            } else {
+                                Package pckCPFail = new Package(Header.CHANGEPASS, "Fail");
+                                transport.sendPackage(pckCPFail);
+
+                                // debug
+                                System.out.println("Không hợp lệ " + pckCPFail.getData());
+                                // log file
+                                WriteFileLog.writeFileLog(contentsCP[0], TYPELOG.WARNING, "Change password illegal");
+                            }
                             break;
                         default:
                             break;
@@ -133,15 +340,14 @@ class Service extends Thread {
                 }
             }
         } catch (IOException ex) {
-            Logger.getLogger(ex.toString());
-            System.out.println("Lỗi nhận dữ liệu từ client");
+            // log file
+            WriteFileLog.writeFileLog("service", TYPELOG.ERROR, ex.getMessage());
+            //Logger.getLogger(ex.toString());
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println("Lỗi không tìm thấy class trong class transport");
+            // log file
+            WriteFileLog.writeFileLog("service", TYPELOG.ERROR, ex.getMessage());
+            //Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-            if (sendListAccount != null) {
-                sendListAccount.setIsRunning(false);
-            }
 
             synchronized (this) {
                 for (int i = 0; i < maxNumberClient; i++) {
@@ -151,46 +357,25 @@ class Service extends Thread {
                 }
             }
 
-            try {
-                if (transport != null) {
-                    transport.close();
-                }
-            } catch (IOException ex) {
-                Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
-                System.out.println("Không thể đóng stream");
-            }
-
-            try {
-                socket.close();
-            } catch (IOException ex) {
-                Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
-                System.out.println("Không thể đóng socket client");
-            }
         }
     }
 
-    public boolean createAccount(Account act) throws IOException {
-        // nhận vào thông tin tài khoản
-        // kiểm tra tài khoản hợp lệ
-        // tạo một tài khoản trong database
-        // nếu thành công thì ~
-        return false;
+    public boolean signup(Account act) {
+        return Server.signup(act);
     }
 
-    public void disConnect() {
-
+    public void closeService() {
+        if (sendListAccount != null) {
+            sendListAccount.setIsRunning(false);
+        }
+        isRuning = false;
     }
 
-    private Account login(String userName, String password) {
-        return Server.login(userName, password);
+    private Account signIn(String userName, String password) {
+        return Server.signIn(userName, password);
     }
 
-    public void updateAccount() {
-
+    public boolean changePass(String username, String passwordold, String passwordnew) {
+        return Server.changePass(username, passwordold, passwordnew);
     }
-
-    public void requestSendFile() {
-
-    }
-
 }

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data>
+	<user>
+		<username>thuan</username>
+		<password>123</password>
+		<fullname>Trịnh Thanh Thuận</fullname>
+		<image></image>
+	</user>
+	<user>
+		<username>thanh</username>
+		<password>123</password>
+		<fullname>Nguyễn Công Thành</fullname>
+		<image></image>
+	</user>
+	<user>
+		<username>kiet</username>
+		<password>123</password>
+		<fullname>Trương Tuấn Kiệt</fullname>
+		<image></image>
+	</user>
+	<user>
+		<username>hungas</username>
+		<password>123</password>
+		<fullname>Lâm Thiên Hưng</fullname>
+		<image></image>
+	</user>
+	<user>
+		<username>thien</username>
+		<password>123</password>
+		<fullname>Đỗ Minh Thiện</fullname>
+		<image></image>
+	</user>
+	<user>
+		<username>dong</username>
+		<password>123</password>
+		<fullname>Nguyễn Đức Đông</fullname>
+		<image></image>
+	</user>
+</data>

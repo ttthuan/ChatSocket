@@ -8,11 +8,9 @@ package mmt;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-/**
- *
- * @author Totoro
- */
 public class Client {
 
     // Attributes
@@ -44,27 +42,34 @@ public class Client {
         this.service = service;
     }
 
-    public Client(Socket socketClient, Account account) {
-        this.socketClient = socketClient;
-        this.account = account;
-    }
+//    public Client(Socket socketClient, Account account) {
+//        this.socketClient = socketClient;
+//        this.account = account;
+//    }
 
     public Client() {
-
+        socketClient = null;
+        account = null;
+        service = null;
     }
 
     // Hàm hành sự - Method
     // kết nối tới Client, tạo luồng phục vụ
     // chỗ này t muốn tách hàm ra nhưng không biết tách sao cho hay nên để vậy 
-    public void connect(String address, int port) throws IOException {
-        socketClient = new Socket(address, port);
+    public void connect(String address, int port){
+        try {
+            socketClient = new Socket(address, port);
+            initService();
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            // lỗi kết nối tới server
+        }
+    }
+    
+    public void initService(){
         if (socketClient != null) {
             service = new Service(socketClient);
         }
-    }
-
-    public void disConnect() throws IOException {
-        socketClient.close();
     }
 
     // Sent to server of register
@@ -113,7 +118,31 @@ public class Client {
         service.chatWithAPerson(pckChat);
     }
     
+    void notificationSendFile(String pckNotificationSendFile, String pathFile){
+        service.notificationSendFile(pckNotificationSendFile, pathFile);
+    }
+    
+    public void logout(){
+        service.logout(new Package(Header.LOGOUT, account.getUserName()));
+    }
+    
     public static void setUsernameOnUi(String username){
         ChatRoom.setUsernameOnUi(username);
+    }
+    
+    public void closeClient(){
+        service.closeClient(new Package(Header.CLOSECLIENT, "close"));
+    }
+    
+    public boolean signup(Account account){
+        return service.signup(account);
+    }
+    
+    public void changePassword(String passold, String passnew){
+        service.changePassword(account.getUserName() + ";" + passold + ";" + passnew);
+    }
+    
+    public static void showStatus(String content){
+        ChangePassword.showStatus(content);
     }
 }

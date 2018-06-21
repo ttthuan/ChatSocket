@@ -20,7 +20,7 @@ public class Transport {
     private ObjectOutputStream send = null;
     private ObjectInputStream recive = null;
     
-    public Transport(Socket socket) throws IOException{
+    public Transport(Socket socket){
         this.socket = socket;
     }
     

@@ -8,31 +8,27 @@ package mmt;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.ComponentOrientation;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
-import static mmt.AccountItem.applyQualityRenderingHints;
+import static mmt.ChatRoom.applyQualityRenderingHints;
 
-/**
- *
- * @author Totoro
- */
 public class ChatItem extends javax.swing.JPanel implements ListCellRenderer<PackageChat> {
 
     private Account account = null;
+    private boolean isFile = false;
 
     public ChatItem(Account account) {
         initComponents();
@@ -43,122 +39,180 @@ public class ChatItem extends javax.swing.JPanel implements ListCellRenderer<Pac
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
         avatar = new javax.swing.JLabel();
-        txtMessage = new javax.swing.JLabel();
+        jPanel4 = new javax.swing.JPanel();
         txtName = new javax.swing.JLabel();
-        txtTime1 = new javax.swing.JLabel();
         txtTime2 = new javax.swing.JLabel();
+        jPanel5 = new javax.swing.JPanel();
+        txtMessage = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
-        setMaximumSize(new java.awt.Dimension(550, 50));
-        setMinimumSize(new java.awt.Dimension(550, 50));
-        setPreferredSize(new java.awt.Dimension(550, 50));
+        setMaximumSize(new java.awt.Dimension(640, 50));
+        setMinimumSize(new java.awt.Dimension(640, 50));
+        setPreferredSize(new java.awt.Dimension(640, 50));
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel1.setMaximumSize(new java.awt.Dimension(550, 50));
-        jPanel1.setMinimumSize(new java.awt.Dimension(550, 50));
-        jPanel1.setOpaque(false);
-        jPanel1.setPreferredSize(new java.awt.Dimension(550, 50));
-        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        jPanel1.add(avatar, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 32, 32));
+        jPanel2.setOpaque(false);
+        jPanel2.setPreferredSize(new java.awt.Dimension(579, 50));
+        jPanel2.setLayout(new java.awt.BorderLayout());
 
-        txtMessage.setFont(new java.awt.Font("Noto Sans", 0, 12)); // NOI18N
-        txtMessage.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        txtMessage.setText("SMS ");
-        jPanel1.add(txtMessage, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 15, 480, 17));
+        jPanel3.setOpaque(false);
+        jPanel3.setPreferredSize(new java.awt.Dimension(50, 50));
 
-        txtName.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-        txtName.setText("6:27 PM");
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(avatar, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(avatar, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        jPanel2.add(jPanel3, java.awt.BorderLayout.WEST);
+
+        jPanel4.setOpaque(false);
+        jPanel4.setPreferredSize(new java.awt.Dimension(50, 100));
+        jPanel4.setLayout(new java.awt.BorderLayout());
+
+        txtName.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        txtName.setText("Trịnh Thanh Thuận");
         txtName.setMaximumSize(new java.awt.Dimension(36, 15));
         txtName.setMinimumSize(new java.awt.Dimension(36, 15));
         txtName.setPreferredSize(new java.awt.Dimension(36, 15));
-        jPanel1.add(txtName, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 3, 200, 13));
+        jPanel4.add(txtName, java.awt.BorderLayout.PAGE_START);
 
-        txtTime1.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-        txtTime1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        txtTime1.setText("6:27");
-        jPanel1.add(txtTime1, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 35, 40, 10));
-
-        txtTime2.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        txtTime2.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
         txtTime2.setText("6:27 PM");
-        jPanel1.add(txtTime2, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 35, -1, 10));
+        jPanel4.add(txtTime2, java.awt.BorderLayout.PAGE_END);
+
+        jPanel5.setOpaque(false);
+        jPanel5.setPreferredSize(new java.awt.Dimension(589, 18));
+
+        txtMessage.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        txtMessage.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        txtMessage.setText("SMS ");
+        txtMessage.setPreferredSize(new java.awt.Dimension(30, 20));
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(33, 33, 33)
+                .addComponent(txtMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 527, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(29, Short.MAX_VALUE))
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(txtMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        jPanel4.add(jPanel5, java.awt.BorderLayout.CENTER);
+
+        jPanel2.add(jPanel4, java.awt.BorderLayout.CENTER);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 639, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(1, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel avatar;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JLabel txtMessage;
     private javax.swing.JLabel txtName;
-    private javax.swing.JLabel txtTime1;
     private javax.swing.JLabel txtTime2;
     // End of variables declaration//GEN-END:variables
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        
+
         // debug
         System.out.println("paint");
-        
-        Dimension arcs = new Dimension(40, 40);
+        Font font = new Font("Segeo UI", Font.PLAIN, 14);
+        FontMetrics met = g.getFontMetrics(font);
+        int heightText = met.getHeight();
+        int widthText = met.stringWidth(txtMessage.getText());
+        int length = txtMessage.getText().length();
+
+        Dimension arcs = new Dimension(15, 15);
         int width = getWidth();
         int height = getHeight();
         Graphics2D graphics = (Graphics2D) g;
         graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-        //Draws the rounded opaque panel with borders.
-        graphics.setColor(new Color(192,202,233));
-        graphics.fillRoundRect(0, 0, width - 1, height - 3, arcs.width, arcs.height);//paint background
-        graphics.setColor(new Color(192,202,233));
-        graphics.drawRoundRect(0, 0, width - 1, height - 3, arcs.width, arcs.height);//paint border
+        
+        if(txtMessage.getHorizontalAlignment() == JLabel.RIGHT){
+            //Draws the rounded opaque panel with borders.
+            graphics.setColor(new Color(199, 237, 252));
+            graphics.fillRoundRect(width - widthText - 38, 33 - heightText, widthText + 15, heightText + 4, arcs.width, arcs.height);//paint background
+            graphics.setColor(new Color(199, 237, 252));
+            graphics.drawRoundRect(width - widthText - 38, 33 - heightText, widthText + 15, heightText + 4, arcs.width, arcs.height);//paint border
+        }else{
+            //Draws the rounded opaque panel with borders.
+            graphics.setColor(new Color(240, 244, 248));
+            graphics.fillRoundRect(75, 33 - heightText, widthText + 15, heightText + 4, arcs.width, arcs.height);//paint background
+            graphics.setColor(new Color(240, 244, 248));
+            graphics.drawRoundRect(75, 33 - heightText, widthText + 15, heightText + 4, arcs.width, arcs.height);//paint border
+        }
+        
     }
 
     @Override
     public Component getListCellRendererComponent(JList<? extends PackageChat> list, PackageChat value, int index, boolean isSelected, boolean cellHasFocus) {
         if (value != null) {
             synchronized (this) {
-                
+
                 // debug
                 System.out.println("render");
-                
+                txtTime2.setText(value.getH() + ":" + value.getM());
+                txtMessage.setText(value.getContent());
                 // kiểm tra người nào đẩy lên
                 if (value.getAccount().equals(account)) {
                     // chủ nhân đẩy lên
                     // lệch phải
-                    txtMessage.setText(value.getContent());
+                    
                     txtMessage.setHorizontalAlignment(JLabel.RIGHT);
-                    txtTime1.setText(value.getH() + ":" + value.getM());
+                    txtTime2.setHorizontalAlignment(JLabel.RIGHT);
                     txtName.setText("");
                     avatar.setIcon(null);
-                    txtTime2.setText("");
                 } else {
                     // lệch trái
                     txtMessage.setHorizontalAlignment(JLabel.LEFT);
-                    txtMessage.setText(value.getContent());
+                    txtTime2.setHorizontalAlignment(JLabel.LEFT);
                     txtName.setText(value.getAccount().getFullName());
-                    txtTime2.setText(value.getH() + ":" + value.getM());
-                    txtTime1.setText("");
                     customizeImageAvar(this.avatar, "../Images/unnamed.png");
                 }
-                
+
                 txtMessage.setOpaque(false);
                 avatar.setOpaque(false);
-                txtTime1.setOpaque(false);
                 txtName.setOpaque(false);
-                //this.setOpaque(true);
+                txtTime2.setOpaque(false);
+                this.setOpaque(true);
             }
 
         }

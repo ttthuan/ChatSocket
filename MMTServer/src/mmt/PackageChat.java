@@ -7,16 +7,17 @@ package mmt;
 
 import java.io.Serializable;
 
-
 /**
  *
  * @author Keven
  */
-public class PackageChat implements Serializable{
+public class PackageChat implements Serializable {
+
     private Account account;
     private String content;
     private int h;
     private int m;
+    private boolean isFile = false;
 
     public PackageChat(Account account, String content, int h, int m) {
         this.account = account;
@@ -57,29 +58,33 @@ public class PackageChat implements Serializable{
         this.m = m;
     }
 
+    public boolean isIsFile() {
+        return isFile;
+    }
+
+    public void setIsFile(boolean isFile) {
+        this.isFile = isFile;
+    }
+    
+    
+
     @Override
     public boolean equals(Object obj) {
         PackageChat two = (PackageChat) obj;
-        if(this.account.equals(two.getAccount())){
+        if (this.account.equals(two.getAccount())) {
             // kiểm tra giờ
-            if(this.h == two.getH()){
-                if(this.m == two.getM()){
+            if (this.h == two.getH()) {
+                if (this.m == two.getM()) {
                     return true;
-                }else{
-                    return false;
                 }
-            }else{ // !=
-                return false;
             }
-        }else{
-            return false;
         }
+        return false;
     }
 
     @Override
     public String toString() {
-        return account.getUserName() + " " + content + " " + h+":"+m;
+        return account.getUserName() + " " + content + " " + h + ":" + m;
     }
-    
-    
+
 }

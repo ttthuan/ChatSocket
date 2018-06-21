@@ -26,7 +26,7 @@ public class SendListAccountToUser extends Thread {
     private int time = 0;
     private boolean isFirstRun = true;
     private boolean isRunning = true;
-    private Service service = null;
+    private int countErorr;
 
     public boolean isIsRunning() {
         return isRunning;
@@ -40,12 +40,18 @@ public class SendListAccountToUser extends Thread {
         this.time = time;
     }
 
-    public SendListAccountToUser(Socket socket, Service[] services, Service service) throws IOException {
+    public SendListAccountToUser(Socket socket, Service[] services, Account account){
         this.socket = socket;
         this.services = services;
         this.maxNumberClient = services.length;
         transport = new Transport(socket);
-        this.service = service;
+        this.account = account;
+        //this.service = service;
+        
+        time = 0;
+        isFirstRun = true;
+        isRunning = true;
+        countErorr = 0;
     }
 
     public void sleepWithTime() {
@@ -65,7 +71,8 @@ public class SendListAccountToUser extends Thread {
             List<Account> accounts = new ArrayList<>();
             synchronized (this) {
                 for (int i = 0; i < maxNumberClient; i++) {
-                    if (services[i] != null && services[i].getAccount() != null && services[i] != service) {
+                    if (services[i] != null && services[i].getAccount() != null && 
+                            !services[i].getAccount().getUserName().equals(account.getUserName())) {
                         accounts.add(services[i].getAccount());
                     }
                 }
@@ -74,11 +81,15 @@ public class SendListAccountToUser extends Thread {
             Package pck = new Package(Header.LISTACCOUNT, accounts);
 
             //debug
-            System.out.println(service.getAccount().getUserName() + " đã gửi list: " + accounts.size());
+            //System.out.println(service.getAccount().getUserName() + " đã gửi list: " + accounts.size());
 
             try {
                 transport.sendPackage(pck);
             } catch (IOException ex) {
+                // log file
+                if(account != null){
+                    WriteFileLog.writeFileLog("service " + account.getUserName(), TYPELOG.ERROR, ex.getMessage());
+                }
                 Logger.getLogger(SendListAccountToUser.class.getName()).log(Level.SEVERE, null, ex);
             }
 
@@ -86,14 +97,18 @@ public class SendListAccountToUser extends Thread {
                 time = 5000;
                 isFirstRun = false;
             }
+            
+            if(socket == null){
+                break;
+            }
         }
         
-        try {
-            transport.close();
-        } catch (IOException ex) {
-            Logger.getLogger(SendListAccountToUser.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println("lỗi đóng stream gửi list account cho user");
-        }
+//        try {
+//            transport.close();
+//        } catch (IOException ex) {
+//            Logger.getLogger(SendListAccountToUser.class.getName()).log(Level.SEVERE, null, ex);
+//            System.out.println("lỗi đóng stream gửi list account cho user");
+//        }
     }
 
 }
